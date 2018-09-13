@@ -72,14 +72,14 @@ public class JSONObject {
     }
 
     public JSONObject getJSONObject(String key) throws JSONException {
-        if(jsonObject == null) {
+        if(jsonObject == null || jsonObject.get(key) == null) {
             return null;
         }
         return new JSONObject(jsonObject.get(key).isObject());
     }
 
     public BigDecimal getBigDecimal(String key) throws JSONException {
-        if(jsonObject == null) {
+        if(jsonObject == null || jsonObject.get(key) == null) {
             return null;
         }
         double value = jsonObject.get(key).isNumber().doubleValue();
@@ -87,18 +87,24 @@ public class JSONObject {
     }
 
     public BigInteger getBigInteger(String key) throws JSONException {
-        if(jsonObject == null) {
+        if(jsonObject == null || jsonObject.get(key) == null) {
             return null;
         }
         double value = jsonObject.get(key).isNumber().doubleValue();
         return BigInteger.valueOf(Double.valueOf(value).longValue());
     }
 
-    public boolean getBoolean(String key) throws JSONException {
+    public Boolean getBoolean(String key) throws JSONException {
+        if(jsonObject == null || jsonObject.get(key) == null) {
+            return null;
+        }
         return jsonObject.get(key).isBoolean().booleanValue();
     }
 
-    public double getDouble(String key) throws JSONException {
+    public Double getDouble(String key) throws JSONException {
+        if(jsonObject == null || jsonObject.get(key) == null) {
+            return null;
+        }
         return jsonObject.get(key).isNumber().doubleValue();
     }
 
@@ -106,34 +112,48 @@ public class JSONObject {
         throw new IllegalArgumentException("Not yet implemented");
     }
 
-    public float getFloat(String key) throws JSONException {
+    public Float getFloat(String key) throws JSONException {
+        if(jsonObject == null || jsonObject.get(key) == null) {
+            return null;
+        }
         return Float.valueOf(Double.valueOf(jsonObject.get(key).isNumber().doubleValue()).floatValue());
     }
 
-    public int getInt(String key) throws JSONException {
+    public Integer getInt(String key) throws JSONException {
+        if(jsonObject == null || jsonObject.get(key) == null) {
+            return null;
+        }
         return Integer.valueOf(Double.valueOf(jsonObject.get(key).isNumber().doubleValue()).intValue());
     }
 
     public JSONArray getJSONArray(String key) throws JSONException {
-        if(jsonObject == null) {
+        if(jsonObject == null || jsonObject.get(key) == null) {
             return null;
         }
-        return new JSONArray(jsonObject.get(key).isArray());
+        com.google.gwt.json.client.JSONArray jsonArray = jsonObject.get(key).isArray();
+        if(jsonArray != null) {
+            return new JSONArray(jsonArray);
+        } else {
+            return null;
+        }
     }
 
-    public long getLong(String key) throws JSONException {
+    public Long getLong(String key) throws JSONException {
+        if(jsonObject == null || jsonObject.get(key) == null) {
+            return null;
+        }
         return Long.valueOf(Double.valueOf(jsonObject.get(key).isNumber().doubleValue()).longValue());
     }
 
     public Number getNumber(String key) throws JSONException {
-        if(jsonObject == null) {
+        if(jsonObject == null || jsonObject.get(key) == null) {
             return null;
         }
         return Double.valueOf(Double.valueOf(jsonObject.get(key).isNumber().doubleValue()).doubleValue());
     }
 
     public String getString(String key) throws JSONException {
-        if(jsonObject == null) {
+        if(jsonObject == null || jsonObject.get(key) == null) {
             return null;
         }
         return jsonObject.get(key).isString().stringValue();
