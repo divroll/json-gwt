@@ -123,6 +123,9 @@ public class JSONArray {
         if(jsonArray == null && jsonArray.get(index)!= null) {
             return  null;
         }
+        if(jsonArray.get(index).isString() == null) {
+            return null;
+        }
         return jsonArray.get(index).isString().stringValue();
     }
     public boolean isEmpty() {

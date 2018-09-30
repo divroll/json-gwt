@@ -156,6 +156,9 @@ public class JSONObject {
         if(jsonObject == null || jsonObject.get(key) == null) {
             return null;
         }
+        if(jsonObject.get(key).isString() == null) {
+            return null;
+        }
         return jsonObject.get(key).isString().stringValue();
     }
 
