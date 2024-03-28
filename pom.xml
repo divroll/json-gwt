@@ -5,15 +5,15 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.divroll</groupId>
   <artifactId>json-gwt</artifactId>
-  <version>0</version>
+  <version>0-SNAPSHOT</version>
 
   <name>JSON</name>
   <description>org.json wrapper for GWT</description>
 
   <licenses>
     <license>
-      <name>GNU Lesser General Public License version 3</name>
-      <url>https://opensource.org/licenses/LGPL-3.0</url>
+      <name>Apache License 2.0</name>
+      <url>https://opensource.org/licenses/Apache-2.0</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -22,6 +22,7 @@
     <gwt.version>2.8.2</gwt.version>
     <gwt-maven.version>2.8.2</gwt-maven.version>
     <guava.version>23.0</guava.version>
+    <junit.version>4.12</junit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -108,7 +109,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -178,23 +179,13 @@
           </plugin>
         </plugins>
       </build>
-      <repositories>
-        <repository>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <id>bintray-divroll-oss</id>
-          <name>bintray</name>
-          <url>https://dl.bintray.com/divroll/oss</url>
-        </repository>
-      </repositories>
     </profile>
   </profiles>
   <distributionManagement>
     <repository>
-      <id>bintray-divroll-oss</id>
-      <name>divroll-oss</name>
-      <url>https://api.bintray.com/maven/divroll/oss/json-gwt/;publish=1</url>
+      <id>divroll</id>
+      <name>Divroll Maven Packages</name>
+      <url>https://maven.pkg.github.com/divroll/json-gwt</url>
     </repository>
   </distributionManagement>
 </project>

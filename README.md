@@ -6,23 +6,23 @@
 # Use with maven
 
 #### Add repository
-```aidl
+```xml
 <repository>
-   <snapshots>
-      <enabled>false</enabled>
-   </snapshots>
-   <id>bintray-divroll-oss</id>
-   <name>bintray</name>
-   <url>https://dl.bintray.com/divroll/oss</url>
+    <snapshots>
+        <enabled>true</enabled>
+    </snapshots>
+    <id>divroll</id>
+    <name>Divroll Maven Packages</name>
+    <url>https://maven.pkg.github.com/divroll</url>
 </repository>
 ```
 
 #### Add dependency
 
-```aidl
+```xml
 <dependency>
    <groupId>com.divroll</groupId>
    <artifactId>json-gwt</artifactId>
-   <version>0</version>
+   <version>0-SNAPSHOT</version>
 </dependency>
 ```
