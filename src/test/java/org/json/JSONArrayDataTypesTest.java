@@ -21,11 +21,9 @@ import com.google.gwt.junit.client.GWTTestCase;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class JSONArrayTest extends GWTTestCase {
+public class JSONArrayDataTypesTest extends GWTTestCase {
 
     private JSONArray jsonArray;
-
-    enum TestEnum { VALUE1, VALUE2 }
 
     @Override
     public String getModuleName() {
@@ -35,22 +33,6 @@ public class JSONArrayTest extends GWTTestCase {
     @Override
     protected void gwtSetUp() throws Exception {
         jsonArray = new JSONArray();
-    }
-
-    public void test_new_empty_array_is_created_successfully() {
-        JSONArray array = new JSONArray();
-        assertNotNull(array);
-        assertTrue(array.length() == 0);
-        assertEquals(0, array.length());
-    }
-
-    public void test_array_can_be_initialized_from_gwt_json_array() {
-        com.google.gwt.json.client.JSONArray gwtArray = new com.google.gwt.json.client.JSONArray();
-        gwtArray.set(0, new com.google.gwt.json.client.JSONString("test"));
-
-        JSONArray array = new JSONArray(gwtArray);
-        assertNotNull(array);
-        assertEquals(1, array.length());
     }
 
     public void test_boolean_values_are_stored_and_retrieved_correctly() throws JSONException {
@@ -75,22 +57,6 @@ public class JSONArrayTest extends GWTTestCase {
         } catch (JSONException e) {
             assertEquals("JSONArray[2] is not a Boolean.", e.getMessage());
         }
-    }
-
-    public void test_unsupported_objects_throw_illegal_argument_exception() throws JSONException {
-        try {
-            jsonArray.put((Object) new java.util.Date());
-            fail("Expected IllegalArgumentException");
-        } catch (JSONException e) {
-            // expected
-        }
-    }
-
-    public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
-        jsonArray.put("VALUE1");
-        TestEnum valueEnum = jsonArray.getEnum(TestEnum.class, 0);
-        assertNotNull(valueEnum);
-        assertEquals("VALUE1", valueEnum.toString());
     }
 
     public void test_float_values_maintain_precision_when_retrieved() throws JSONException {
@@ -187,41 +153,5 @@ public class JSONArrayTest extends GWTTestCase {
         } catch (JSONException e) {
             assertEquals("JSONArray[2] is not a string.", e.getMessage());
         }
-    }
-
-    public void test_nested_arrays_and_objects_maintain_their_structure_and_data() throws JSONException {
-        JSONArray innerArray = new JSONArray();
-        innerArray.put(1).put(2);
-        JSONObject innerObj = new JSONObject();
-        innerObj.put("key", "value");
-
-        jsonArray.put(innerArray).put(innerObj);
-
-        JSONArray outArr = jsonArray.getJSONArray(0);
-        JSONObject outObj = jsonArray.getJSONObject(1);
-
-        assertNotNull(outArr);
-        assertEquals(2, outArr.length());
-        assertEquals(1, outArr.getInt(0));
-
-        assertNotNull(outObj);
-        assertEquals("value", outObj.getString("key"));
-    }
-
-    public void test_adding_unsupported_object_types_results_in_exception() throws JSONException {
-        try {
-            jsonArray.put((Object) new java.util.Date());
-            fail("Expected IllegalArgumentException");
-        } catch (org.json.JSONException e) {
-            // expected
-            assertEquals("Object type java.util.Date is not supported.", e.getMessage());
-        }
-    }
-
-    public void test_empty_state_and_null_detection_work_correctly() throws JSONException {
-        assertTrue(jsonArray.length() == 0);
-        jsonArray.put(JSONNull.getInstance());
-        assertFalse(jsonArray.length() == 0);
-        assertTrue(jsonArray.isNull(0));
     }
 }

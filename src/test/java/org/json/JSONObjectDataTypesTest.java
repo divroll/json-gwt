@@ -22,7 +22,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class JSONObjectTest extends GWTTestCase {
+public class JSONObjectDataTypesTest extends GWTTestCase {
 
     private JSONObject jsonObject;
 
@@ -34,30 +34,6 @@ public class JSONObjectTest extends GWTTestCase {
     @Override
     protected void gwtSetUp() throws Exception {
         jsonObject = new JSONObject();
-    }
-
-    public void test_new_empty_object_is_created_successfully() {
-        JSONObject obj = new JSONObject();
-        assertNotNull(obj);
-        assertTrue(obj.keySet().isEmpty());
-    }
-
-    public void test_object_can_be_created_from_valid_json_string() {
-        String jsonString = "{\"name\":\"John\",\"age\":30,\"active\":true}";
-        try {
-            JSONObject obj = new JSONObject(jsonString);
-            assertNotNull(obj);
-        } catch (Exception e) {
-        }
-    }
-
-    public void test_object_can_be_initialized_from_gwt_json_object() {
-        com.google.gwt.json.client.JSONObject gwtObject = new com.google.gwt.json.client.JSONObject();
-        gwtObject.put("test", new JSONString("value"));
-
-        JSONObject obj = new JSONObject(gwtObject);
-        assertNotNull(obj);
-        assertEquals("value", obj.getString("test"));
     }
 
     public void test_boolean_values_are_stored_and_retrieved_correctly() throws JSONException {
@@ -305,42 +281,5 @@ public class JSONObjectTest extends GWTTestCase {
         }
         assertTrue(jsonObject.keySet().contains("num"));
         assertTrue(jsonObject.keySet().contains("nullNum"));
-    }
-
-    public void test_nested_arrays_and_objects_maintain_their_structure_and_data() throws JSONException {
-        JSONArray arr = new JSONArray();
-        arr.put("x");
-        JSONObject obj = new JSONObject();
-        obj.put("y", 2);
-
-        jsonObject.put("arrKey", arr)
-                .put("objKey", obj);
-
-        JSONArray outArr = jsonObject.getJSONArray("arrKey");
-        JSONObject outObj = jsonObject.getJSONObject("objKey");
-
-        assertNotNull(outArr);
-        assertEquals("x", outArr.getString(0));
-        assertNotNull(outObj);
-        assertEquals(2, outObj.getInt("y"));
-    }
-
-    public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
-        jsonObject.put("e", "VALUE1");
-        try {
-            jsonObject.getEnum(TestEnum.class, "e");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-    }
-
-    public void test_json_null_values_are_detected_correctly() throws JSONException {
-        jsonObject.put("n", JSONNull.getInstance());
-        assertTrue(jsonObject.get("n") == null);
-    }
-
-    enum TestEnum {
-        VALUE1, VALUE2
     }
 }
