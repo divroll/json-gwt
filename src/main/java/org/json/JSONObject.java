@@ -15,6 +15,7 @@
  */
 package org.json;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONException;
 import com.google.gwt.json.client.JSONNull;
@@ -22,6 +23,8 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
@@ -77,7 +80,13 @@ public class JSONObject {
     if (jsonObject == null || jsonObject.get(key) == null) {
       return null;
     }
-    return new JSONObject(jsonObject.get(key).isObject());
+    JSONValue jsonValue = jsonObject.get(key);
+    com.google.gwt.json.client.JSONObject jsonObjectObject = jsonValue.isObject();
+    if (jsonObjectObject != null) {
+      return new JSONObject(jsonObjectObject);
+    } else {
+      return null;
+    }
   }
 
   public BigDecimal getBigDecimal(String key) throws JSONException {
@@ -409,6 +418,13 @@ public class JSONObject {
 
   @Override
   public String toString() {
-    return this.jsonObject.toString();
+    if (this.jsonObject == null) {
+      return null;
+    } else if (this.jsonObject.toString() == "null") {
+      return null;
+    }
+    String jsonString = this.jsonObject.toString();
+    Window.alert(jsonString);
+    return jsonString;
   }
 }

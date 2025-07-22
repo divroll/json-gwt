@@ -95,8 +95,7 @@ public class JSONArrayTest extends GWTTestCase {
 
     public void testGetFloatBug() throws JSONException {
         jsonArray.put(2.5f);
-        // This may not give exact 2.5f due to bug using longValue()
-        assertEquals(2.0f, jsonArray.getFloat(0), 0.001f);
+        assertEquals(2.5f, jsonArray.getFloat(0), 0.001f);
     }
 
     public void testPutAndGetPrimitives() throws JSONException {
@@ -109,8 +108,8 @@ public class JSONArrayTest extends GWTTestCase {
         assertFalse(jsonArray.getBoolean(1));
         assertEquals(1.234d, jsonArray.getDouble(2));
         assertEquals(2.5f, jsonArray.getFloat(3), 0.0001f);
-        assertEquals(42, jsonArray.getInt(4));
-        assertEquals(123456789L, jsonArray.getLong(5));
+        assertEquals(42, jsonArray.getInt(4).intValue());
+        assertEquals(123456789L, jsonArray.getLong(5).longValue());
     }
 
     public void testPutAndGetWrappersAndNulls() throws JSONException {
@@ -162,7 +161,7 @@ public class JSONArrayTest extends GWTTestCase {
 
         assertNotNull(outArr);
         assertEquals(2, outArr.length());
-        assertEquals(1, outArr.getInt(0));
+        assertEquals(1, outArr.getInt(0).intValue());
 
         assertNotNull(outObj);
         assertEquals("value", outObj.getString("key"));

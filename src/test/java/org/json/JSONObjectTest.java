@@ -15,8 +15,12 @@
  */
 package org.json;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.*;
 import com.google.gwt.junit.client.GWTTestCase;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class JSONObjectTest extends GWTTestCase {
 
@@ -167,6 +171,93 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals("item2", retrieved.getString(1));
 
         assertNull(jsonObject.getJSONArray("nullArray"));
+    }
+
+    public void testGettersAndPutters() throws JSONException {
+        jsonObject.put("bool", true)
+                .put("dbl", 2.5d)
+                .put("flt", 1.25f)
+                .put("int", 10)
+                .put("long", 100L)
+                .put("str", "test");
+
+        assertTrue(jsonObject.getBoolean("bool"));
+        assertEquals(Double.valueOf(2.5d), jsonObject.getDouble("dbl"));
+        assertEquals(Float.valueOf(1.25f), jsonObject.getFloat("flt"));
+        assertEquals(Integer.valueOf(10), jsonObject.getInt("int"));
+        assertEquals(Long.valueOf(100L), jsonObject.getLong("long"));
+        assertEquals("test", jsonObject.getString("str"));
+    }
+
+    public void testWrapperAndNullValues() throws JSONException {
+        jsonObject.put("b", (Boolean) null)
+                .put("d", (Double) null)
+                .put("f", (Float) null)
+                .put("i", (Integer) null)
+                .put("l", (Long) null)
+                .put("s", (String) null)
+                .put("arr", (JSONArray) null)
+                .put("obj", (JSONObject) null);
+
+        assertNull(jsonObject.getBoolean("b"));
+        assertNull(jsonObject.getDouble("d"));
+        assertNull(jsonObject.getFloat("f"));
+        assertNull(jsonObject.getInt("i"));
+        assertNull(jsonObject.getLong("l"));
+        assertNull(jsonObject.getString("s"));
+        assertNull(jsonObject.getJSONArray("arr"));
+        assertNull(jsonObject.getJSONObject("obj"));
+    }
+
+    public void testBigDecimalAndBigInteger() throws JSONException {
+        jsonObject.put("bd", 3.14d)
+                .put("bi", 12345L);
+
+        assertEquals(new BigDecimal("3.14"), jsonObject.getBigDecimal("bd"));
+        assertEquals(BigInteger.valueOf(12345L), jsonObject.getBigInteger("bi"));
+    }
+
+    public void testGetNumberAndKeySet() throws JSONException {
+        jsonObject.put("num", 5.0d)
+                .put("nullNum", (Number) null);
+
+        assertEquals(Double.valueOf(5.0d), jsonObject.getNumber("num"));
+        assertNull(jsonObject.getNumber("nullNum"));
+        assertTrue(jsonObject.keySet().contains("num"));
+        assertTrue(jsonObject.keySet().contains("nullNum"));
+    }
+
+    public void testNestedArrayAndObject() throws JSONException {
+        JSONArray arr = new JSONArray();
+        arr.put("x");
+        JSONObject obj = new JSONObject();
+        obj.put("y", 2);
+
+        jsonObject.put("arrKey", arr)
+                .put("objKey", obj);
+
+        JSONArray outArr = jsonObject.getJSONArray("arrKey");
+        JSONObject outObj = jsonObject.getJSONObject("objKey");
+
+        assertNotNull(outArr);
+        assertEquals("x", outArr.getString(0));
+        assertNotNull(outObj);
+        assertEquals(Integer.valueOf(2), outObj.getInt("y"));
+    }
+
+    public void testGetEnumThrows() throws JSONException {
+        jsonObject.put("e", "VALUE1");
+        try {
+            jsonObject.getEnum(TestEnum.class, "e");
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    public void testIsNullBehavior() throws JSONException {
+        jsonObject.put("n", JSONNull.getInstance());
+        assertTrue(jsonObject.get("n") == null);
     }
 
     enum TestEnum {

@@ -68,45 +68,81 @@ public class JSONArray {
     if (jsonArray == null && jsonArray.get(index) != null) {
       return null;
     }
-    double value = jsonArray.get(index).isNumber().doubleValue();
-    return BigDecimal.valueOf(value);
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONNumber num = val.isNumber();
+    if (num == null) {
+      return null;
+    }
+    return BigDecimal.valueOf(num.doubleValue());
   }
 
   public BigInteger getBigInteger(int index) throws JSONException {
     if (jsonArray == null && jsonArray.get(index) != null) {
       return null;
     }
-    double value = jsonArray.get(index).isNumber().doubleValue();
-    return BigInteger.valueOf(Double.valueOf(value).longValue());
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONNumber num = val.isNumber();
+    if (num == null) {
+      return null;
+    }
+    return BigInteger.valueOf(Double.valueOf(num.doubleValue()).longValue());
   }
 
-  public boolean getBoolean(int index) throws JSONException {
-    return jsonArray.get(index).isBoolean().booleanValue();
+  public Boolean getBoolean(int index) throws JSONException {
+    if (jsonArray == null || jsonArray.get(index) == null) {
+      return false;
+    }
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONBoolean bool = val.isBoolean();
+    if (bool == null) {
+      return null;
+    }
+    return bool.booleanValue();
   }
 
-  public double getDouble(int index) throws JSONException {
-    double value = jsonArray.get(index).isNumber().doubleValue();
-    return Double.valueOf(value);
+  public Double getDouble(int index) throws JSONException {
+    if (jsonArray == null || jsonArray.get(index) == null) {
+      return null;
+    }
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONNumber num = val.isNumber();
+    if (num == null) {
+      return null;
+    }
+    return num.doubleValue();
   }
 
   public <E extends Enum<E>> E getEnum(Class<E> clazz, int index) throws JSONException {
     throw new IllegalArgumentException("Not yet implemented");
   }
 
-  public float getFloat(int index) throws JSONException {
-    double value = jsonArray.get(index).isNumber().doubleValue();
-    return Float.valueOf(Double.valueOf(value).longValue());
+  public Float getFloat(int index) throws JSONException {
+    if (jsonArray == null || jsonArray.get(index) == null) {
+      return null;
+    }
+    com.google.gwt.json.client.JSONNumber num = jsonArray.get(index).isNumber();
+    if (num == null) {
+      return null;
+    }
+    return (float) num.doubleValue();
   }
 
-  public int getInt(int index) throws JSONException {
-    double value = jsonArray.get(index).isNumber().doubleValue();
-    return Integer.valueOf(Double.valueOf(value).intValue());
+  public Integer getInt(int index) throws JSONException {
+    if (jsonArray == null || jsonArray.get(index) == null) {
+      return null;
+    }
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONNumber num = val.isNumber();
+    if (num == null) {
+      return null;
+    }
+    return Integer.valueOf(Double.valueOf(num.doubleValue()).intValue());
   }
 
   public JSONArray getJSONArray(int index) throws JSONException {
     if (jsonArray == null
-        && jsonArray.get(index) != null
-        && jsonArray.get(index).isArray() != null) {
+            || jsonArray.get(index) == null
+            || jsonArray.get(index).isArray() == null) {
       return null;
     }
     com.google.gwt.json.client.JSONArray array = jsonArray.get(index).isArray();
@@ -115,35 +151,48 @@ public class JSONArray {
 
   public JSONObject getJSONObject(int index) throws JSONException {
     if (jsonArray == null
-        && jsonArray.get(index) != null
-        && jsonArray.get(index).isObject() != null) {
+            || jsonArray.get(index) == null
+            || jsonArray.get(index).isObject() == null) {
       return null;
     }
     com.google.gwt.json.client.JSONObject jsonObject = jsonArray.get(index).isObject();
     return new JSONObject(jsonObject);
   }
 
-  public long getLong(int index) throws JSONException {
-    double value = jsonArray.get(index).isNumber().doubleValue();
-    return Long.valueOf(Double.valueOf(value).longValue());
+  public Long getLong(int index) throws JSONException {
+    if (jsonArray == null || jsonArray.get(index) == null) {
+      return null;
+    }
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONNumber num = val.isNumber();
+    if (num == null) {
+      return null;
+    }
+    return Long.valueOf(Double.valueOf(num.doubleValue()).longValue());
   }
 
   public Number getNumber(int index) throws JSONException {
     if (jsonArray == null && jsonArray.get(index) != null) {
       return null;
     }
-    double value = jsonArray.get(index).isNumber().doubleValue();
-    return Double.valueOf(value);
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONNumber num = val.isNumber();
+    if (num == null) {
+      return null;
+    }
+    return Double.valueOf(num.doubleValue());
   }
 
   public String getString(int index) throws JSONException {
     if (jsonArray == null && jsonArray.get(index) != null) {
       return null;
     }
-    if (jsonArray.get(index).isString() == null) {
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONString str = val.isString();
+    if (str == null) {
       return null;
     }
-    return jsonArray.get(index).isString().stringValue();
+    return str.stringValue();
   }
 
   public boolean isEmpty() {
@@ -346,6 +395,11 @@ public class JSONArray {
 
   @Override
   public String toString() {
+    if (jsonArray == null) {
+      return null;
+    } else if (jsonArray.toString() == "null") {
+      return null;
+    }
     return this.jsonArray.toString();
   }
 }
