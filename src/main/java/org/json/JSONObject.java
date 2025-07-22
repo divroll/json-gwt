@@ -15,15 +15,14 @@
  */
 package org.json;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
@@ -36,16 +35,27 @@ import java.util.Set;
  * @version 0-SNAPSHOT
  * @since 0-SNAPSHOT
  */
-public class JSONObject {
+public class JSONObject implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   public static JSONNull NULL = JSONNull.getInstance();
 
   private com.google.gwt.json.client.JSONObject jsonObject;
 
+  /**
+   * Constructs an empty JSONObject.
+   */
   public JSONObject() {
     this.jsonObject = new com.google.gwt.json.client.JSONObject();
   }
 
+  /**
+   * Constructs a JSONObject from a JSON string.
+   *
+   * @param json the JSON string
+   * @throws JSONException if the JSON string is invalid or does not represent an object
+   */
   public JSONObject(String json) throws JSONException {
     try {
       this.jsonObject = JSONParser.parseStrict(json).isObject();
@@ -57,10 +67,21 @@ public class JSONObject {
     }
   }
 
+  /**
+   * Constructs a JSONObject from a GWT JSONObject.
+   *
+   * @param jsonObject the GWT JSONObject
+   */
   public JSONObject(com.google.gwt.json.client.JSONObject jsonObject) {
     this.jsonObject = jsonObject;
   }
 
+  /**
+   * Returns the type of the JSON value.
+   *
+   * @param jsonValue the JSON value
+   * @return the type of the JSON value
+   */
   private String getType(JSONValue jsonValue) {
     if (jsonValue.isObject() != null) {
       return "JSONObject";
@@ -78,6 +99,13 @@ public class JSONObject {
     return "Unknown";
   }
 
+  /**
+   * Retrieves the value associated with the specified key.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key
+   * @throws JSONException if the key is null or the value is not found
+   */
   public Object get(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -102,6 +130,13 @@ public class JSONObject {
     return jsonValue;
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a JSONObject.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a JSONObject
+   * @throws JSONException if the key is null, the value is not found, or the value is not a JSONObject
+   */
   public JSONObject getJSONObject(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -118,6 +153,13 @@ public class JSONObject {
     }
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a BigDecimal.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a BigDecimal
+   * @throws JSONException if the key is null, the value is not found, or the value is not a number
+   */
   public BigDecimal getBigDecimal(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -133,6 +175,13 @@ public class JSONObject {
     return BigDecimal.valueOf(value);
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a BigInteger.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a BigInteger
+   * @throws JSONException if the key is null, the value is not found, or the value is not a number
+   */
   public BigInteger getBigInteger(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -148,6 +197,13 @@ public class JSONObject {
     return BigInteger.valueOf(Double.valueOf(value).longValue());
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a boolean.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a boolean
+   * @throws JSONException if the key is null, the value is not found, or the value is not a boolean
+   */
   public boolean getBoolean(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -162,6 +218,13 @@ public class JSONObject {
     return jsonValue.isBoolean().booleanValue();
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a double.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a double
+   * @throws JSONException if the key is null, the value is not found, or the value is not a number
+   */
   public double getDouble(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -176,10 +239,25 @@ public class JSONObject {
     return jsonValue.isNumber().doubleValue();
   }
 
+  /**
+   * Retrieves an enum constant by its name associated with the specified key.
+   *
+   * @param clazz the enum class
+   * @param key the key of the value to retrieve
+   * @return the enum constant, or null if the entry is missing or not a string
+   * @throws JSONException if the name does not match the enum
+   */
   public <E extends Enum<E>> E getEnum(Class<E> clazz, String key) throws JSONException {
     throw new IllegalArgumentException("Not yet implemented");
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a float.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a float
+   * @throws JSONException if the key is null, the value is not found, or the value is not a number
+   */
   public float getFloat(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -194,6 +272,13 @@ public class JSONObject {
     return (float) jsonValue.isNumber().doubleValue();
   }
 
+  /**
+   * Retrieves the value associated with the specified key as an int.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as an int
+   * @throws JSONException if the key is null, the value is not found, or the value is not a number
+   */
   public int getInt(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -208,6 +293,13 @@ public class JSONObject {
     return (int) jsonValue.isNumber().doubleValue();
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a JSONArray.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a JSONArray
+   * @throws JSONException if the key is null, the value is not found, or the value is not a JSONArray
+   */
   public JSONArray getJSONArray(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -224,6 +316,13 @@ public class JSONObject {
     }
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a long.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a long
+   * @throws JSONException if the key is null, the value is not found, or the value is not a number
+   */
   public long getLong(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -238,6 +337,13 @@ public class JSONObject {
     return (long) jsonValue.isNumber().doubleValue();
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a Number.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a Number
+   * @throws JSONException if the key is null, the value is not found, or the value is not a number
+   */
   public Number getNumber(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -252,6 +358,13 @@ public class JSONObject {
     return jsonValue.isNumber().doubleValue();
   }
 
+  /**
+   * Retrieves the value associated with the specified key as a String.
+   *
+   * @param key the key of the value to retrieve
+   * @return the value associated with the specified key as a String
+   * @throws JSONException if the key is null, the value is not found, or the value is not a string
+   */
   public String getString(String key) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -266,6 +379,12 @@ public class JSONObject {
     return jsonValue.isString().stringValue();
   }
 
+  /**
+   * Checks if the JSONObject contains the specified key.
+   *
+   * @param key the key to check
+   * @return true if the JSONObject contains the specified key, false otherwise
+   */
   public boolean has(String key) {
     if (key == null) {
       return false;
@@ -273,6 +392,12 @@ public class JSONObject {
     return jsonObject != null && jsonObject.get(key) != null;
   }
 
+  /**
+   * Checks if the value associated with the specified key is null.
+   *
+   * @param key the key of the value to check
+   * @return true if the value is null, false otherwise
+   */
   public boolean isNull(String key) {
     if (key == null) {
       return false;
@@ -283,6 +408,14 @@ public class JSONObject {
     return jsonObject.get(key).isNull() != null;
   }
 
+  /**
+   * Associates a boolean value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the boolean value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, boolean value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -294,6 +427,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a Boolean value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the Boolean value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, Boolean value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -309,6 +450,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a double value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the double value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null or the value is not finite
+   */
   public JSONObject put(String key, double value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -323,6 +472,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a Double value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the Double value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null or the value is not finite
+   */
   public JSONObject put(String key, Double value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -341,6 +498,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a float value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the float value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null or the value is not finite
+   */
   public JSONObject put(String key, float value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -355,6 +520,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a Float value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the Float value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null or the value is not finite
+   */
   public JSONObject put(String key, Float value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -373,6 +546,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates an int value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the int value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, int value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -384,6 +565,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates an Integer value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the Integer value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, Integer value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -399,6 +588,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a long value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the long value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, long value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -410,6 +607,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a Long value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the Long value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, Long value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -425,6 +630,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a String value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the String value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, String value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -440,6 +653,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a JSONArray value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the JSONArray value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, JSONArray value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -455,6 +676,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a JSONObject value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the JSONObject value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, JSONObject value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -470,6 +699,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates a JSONNull value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the JSONNull value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null
+   */
   public JSONObject put(String key, JSONNull value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -481,6 +718,14 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Associates an Object value with the specified key.
+   *
+   * @param key the key of the value to associate
+   * @param value the Object value to associate
+   * @return this JSONObject
+   * @throws JSONException if the key is null or the value is not supported
+   */
   public JSONObject put(String key, Object value) throws JSONException {
     if (key == null) {
       throw new JSONException("Null key.");
@@ -533,14 +778,29 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Returns a set of keys in the JSONObject.
+   *
+   * @return a set of keys in the JSONObject
+   */
   public Set<String> keySet() {
     return jsonObject.keySet();
   }
 
+  /**
+   * Returns the underlying GWT JSONObject.
+   *
+   * @return the underlying GWT JSONObject
+   */
   public com.google.gwt.json.client.JSONObject asJSONObject() {
     return this.jsonObject;
   }
 
+  /**
+   * Returns a string representation of the JSONObject.
+   *
+   * @return a string representation of the JSONObject
+   */
   @Override
   public String toString() {
     if (this.jsonObject == null) {
