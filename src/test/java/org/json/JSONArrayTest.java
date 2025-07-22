@@ -38,14 +38,14 @@ public class JSONArrayTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
-    public void testDefaultConstructor() {
+    public void test_new_empty_array_is_created_successfully() {
         JSONArray array = new JSONArray();
         assertNotNull(array);
         assertTrue(array.isEmpty());
         assertEquals(0, array.length());
     }
 
-    public void testConstructorWithGwtJSONArray() {
+    public void test_array_can_be_initialized_from_gwt_json_array() {
         com.google.gwt.json.client.JSONArray gwtArray = new com.google.gwt.json.client.JSONArray();
         gwtArray.set(0, new com.google.gwt.json.client.JSONString("test"));
 
@@ -54,7 +54,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertEquals(1, array.length());
     }
 
-    public void testPutBoolean() throws JSONException {
+    public void test_boolean_values_are_stored_and_retrieved_correctly() throws JSONException {
         jsonArray.put(true);
         jsonArray.put(false);
 
@@ -63,7 +63,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertFalse(((Boolean) jsonArray.get(1)).booleanValue());
     }
 
-    public void testPutBooleanWrapper() throws JSONException {
+    public void test_boolean_wrapper_objects_including_null_are_handled_properly() throws JSONException {
         jsonArray.put(Boolean.TRUE);
         jsonArray.put(Boolean.FALSE);
         jsonArray.put((Boolean) null);
@@ -74,7 +74,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertNull(jsonArray.get(2));
     }
 
-    public void testPutUnsupportedObject() throws JSONException {
+    public void test_unsupported_objects_throw_illegal_argument_exception() throws JSONException {
         try {
             jsonArray.put((Object) new java.util.Date());
             fail("Expected IllegalArgumentException");
@@ -83,7 +83,7 @@ public class JSONArrayTest extends GWTTestCase {
         }
     }
 
-    public void testGetEnumThrowsException() throws JSONException {
+    public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
         jsonArray.put("VALUE1");
         try {
             jsonArray.getEnum(TestEnum.class, 0);
@@ -93,12 +93,12 @@ public class JSONArrayTest extends GWTTestCase {
         }
     }
 
-    public void testGetFloatBug() throws JSONException {
+    public void test_float_values_maintain_precision_when_retrieved() throws JSONException {
         jsonArray.put(2.5f);
         assertEquals(2.5f, jsonArray.getFloat(0), 0.001f);
     }
 
-    public void testPutAndGetPrimitives() throws JSONException {
+    public void test_primitive_values_are_stored_and_retrieved_with_correct_types() throws JSONException {
         jsonArray.put(true).put(false);
         jsonArray.put(1.234d).put(2.5f);
         jsonArray.put(42).put(123456789L);
@@ -112,7 +112,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertEquals(123456789L, jsonArray.getLong(5).longValue());
     }
 
-    public void testPutAndGetWrappersAndNulls() throws JSONException {
+    public void test_null_wrapper_objects_return_null_when_retrieved() throws JSONException {
         jsonArray.put((Boolean) null)
                 .put((Double) null)
                 .put((Float) null)
@@ -129,7 +129,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertNull(jsonArray.getJSONArray(5));
     }
 
-    public void testGetBigDecimalAndBigInteger() throws JSONException {
+    public void test_numeric_values_can_be_retrieved_as_big_decimal_and_big_integer() throws JSONException {
         jsonArray.put(10.75).put(123456789);
         BigDecimal bd = jsonArray.getBigDecimal(0);
         BigInteger bi = jsonArray.getBigInteger(1);
@@ -138,7 +138,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertEquals(BigInteger.valueOf(123456789L), bi);
     }
 
-    public void testGetNumberAndStringAndNull() throws JSONException {
+    public void test_string_number_and_null_values_are_retrieved_with_appropriate_types() throws JSONException {
         jsonArray.put("hello");
         jsonArray.put(3.14);
         jsonArray.put((String) null);
@@ -148,7 +148,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertNull(jsonArray.getString(2));
     }
 
-    public void testNestedJSONArrayAndJSONObject() throws JSONException {
+    public void test_nested_arrays_and_objects_maintain_their_structure_and_data() throws JSONException {
         JSONArray innerArray = new JSONArray();
         innerArray.put(1).put(2);
         JSONObject innerObj = new JSONObject();
@@ -167,7 +167,7 @@ public class JSONArrayTest extends GWTTestCase {
         assertEquals("value", outObj.getString("key"));
     }
 
-    public void testUnsupportedObjectThrows() throws JSONException {
+    public void test_adding_unsupported_object_types_results_in_exception() throws JSONException {
         try {
             jsonArray.put((Object) new java.util.Date());
             fail("Expected IllegalArgumentException");
@@ -176,7 +176,7 @@ public class JSONArrayTest extends GWTTestCase {
         }
     }
 
-    public void testIsNullAndIsEmpty() throws JSONException {
+    public void test_empty_state_and_null_detection_work_correctly() throws JSONException {
         assertTrue(jsonArray.isEmpty());
         jsonArray.put(JSONNull.getInstance());
         assertFalse(jsonArray.isEmpty());

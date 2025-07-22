@@ -36,13 +36,13 @@ public class JSONObjectTest extends GWTTestCase {
         jsonObject = new JSONObject();
     }
 
-    public void testDefaultConstructor() {
+    public void test_new_empty_object_is_created_successfully() {
         JSONObject obj = new JSONObject();
         assertNotNull(obj);
         assertTrue(obj.keySet().isEmpty());
     }
 
-    public void testConstructorWithJSONString() {
+    public void test_object_can_be_created_from_valid_json_string() {
         String jsonString = "{\"name\":\"John\",\"age\":30,\"active\":true}";
         try {
             JSONObject obj = new JSONObject(jsonString);
@@ -51,7 +51,7 @@ public class JSONObjectTest extends GWTTestCase {
         }
     }
 
-    public void testConstructorWithGwtJSONObject() {
+    public void test_object_can_be_initialized_from_gwt_json_object() {
         com.google.gwt.json.client.JSONObject gwtObject = new com.google.gwt.json.client.JSONObject();
         gwtObject.put("test", new JSONString("value"));
 
@@ -60,7 +60,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals("value", obj.getString("test"));
     }
 
-    public void testPutBoolean() throws JSONException {
+    public void test_boolean_values_are_stored_and_retrieved_correctly() throws JSONException {
         jsonObject.put("flag1", true);
         jsonObject.put("flag2", false);
 
@@ -68,7 +68,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertFalse(jsonObject.getBoolean("flag2"));
     }
 
-    public void testPutBooleanWrapper() throws JSONException {
+    public void test_boolean_wrapper_objects_including_null_are_handled_properly() throws JSONException {
         jsonObject.put("flag1", Boolean.TRUE);
         jsonObject.put("flag2", Boolean.FALSE);
         jsonObject.put("flag3", (Boolean) null);
@@ -78,7 +78,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getBoolean("flag3"));
     }
 
-    public void testPutDouble() throws JSONException {
+    public void test_double_values_maintain_precision_when_stored_and_retrieved() throws JSONException {
         jsonObject.put("pi", 3.14159);
         jsonObject.put("max", Double.MAX_VALUE);
         jsonObject.put("min", Double.MIN_VALUE);
@@ -88,7 +88,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals(Double.MIN_VALUE, jsonObject.getDouble("min"), 0.0);
     }
 
-    public void testPutDoubleWrapper() throws JSONException {
+    public void test_double_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Double.valueOf(2.71828));
         jsonObject.put("null", (Double) null);
 
@@ -96,7 +96,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getDouble("null"));
     }
 
-    public void testPutFloat() throws JSONException {
+    public void test_float_values_maintain_precision_when_stored_and_retrieved() throws JSONException {
         jsonObject.put("float1", 1.5f);
         jsonObject.put("float2", Float.MAX_VALUE);
 
@@ -104,7 +104,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals(Float.MAX_VALUE, jsonObject.getFloat("float2"), 0.0);
     }
 
-    public void testPutFloatWrapper() throws JSONException {
+    public void test_float_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Float.valueOf(2.5f));
         jsonObject.put("null", (Float) null);
 
@@ -112,7 +112,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getFloat("null"));
     }
 
-    public void testPutInt() throws JSONException {
+    public void test_integer_values_are_stored_and_retrieved_with_correct_range() throws JSONException {
         jsonObject.put("answer", 42);
         jsonObject.put("max", Integer.MAX_VALUE);
         jsonObject.put("min", Integer.MIN_VALUE);
@@ -122,7 +122,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals(Integer.valueOf(Integer.MIN_VALUE), jsonObject.getInt("min"));
     }
 
-    public void testPutIntegerWrapper() throws JSONException {
+    public void test_integer_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Integer.valueOf(100));
         jsonObject.put("null", (Integer) null);
 
@@ -130,7 +130,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getInt("null"));
     }
 
-    public void testPutLong() throws JSONException {
+    public void test_long_values_are_stored_and_retrieved_with_full_precision() throws JSONException {
         jsonObject.put("big", 123456789L);
         jsonObject.put("max", Long.MAX_VALUE);
 
@@ -138,7 +138,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals(Long.valueOf(Long.MAX_VALUE), jsonObject.getLong("max"));
     }
 
-    public void testPutLongWrapper() throws JSONException {
+    public void test_long_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Long.valueOf(987654321L));
         jsonObject.put("null", (Long) null);
 
@@ -146,7 +146,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getLong("null"));
     }
 
-    public void testPutString() throws JSONException {
+    public void test_string_values_including_empty_and_null_are_stored_correctly() throws JSONException {
         jsonObject.put("name", "John Doe");
         jsonObject.put("empty", "");
         jsonObject.put("null", (String) null);
@@ -156,7 +156,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getString("null"));
     }
 
-    public void testPutJSONArray() throws JSONException {
+    public void test_json_arrays_including_null_maintain_structure_and_content() throws JSONException {
         JSONArray array = new JSONArray();
         array.put("item1");
         array.put("item2");
@@ -173,7 +173,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getJSONArray("nullArray"));
     }
 
-    public void testGettersAndPutters() throws JSONException {
+    public void test_all_primitive_types_work_together_in_single_object() throws JSONException {
         jsonObject.put("bool", true)
                 .put("dbl", 2.5d)
                 .put("flt", 1.25f)
@@ -189,7 +189,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals("test", jsonObject.getString("str"));
     }
 
-    public void testWrapperAndNullValues() throws JSONException {
+    public void test_all_wrapper_null_values_return_null_when_retrieved() throws JSONException {
         jsonObject.put("b", (Boolean) null)
                 .put("d", (Double) null)
                 .put("f", (Float) null)
@@ -209,7 +209,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNull(jsonObject.getJSONObject("obj"));
     }
 
-    public void testBigDecimalAndBigInteger() throws JSONException {
+    public void test_numeric_values_can_be_retrieved_as_big_decimal_and_big_integer() throws JSONException {
         jsonObject.put("bd", 3.14d)
                 .put("bi", 12345L);
 
@@ -217,7 +217,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals(BigInteger.valueOf(12345L), jsonObject.getBigInteger("bi"));
     }
 
-    public void testGetNumberAndKeySet() throws JSONException {
+    public void test_number_retrieval_and_key_enumeration_work_correctly() throws JSONException {
         jsonObject.put("num", 5.0d)
                 .put("nullNum", (Number) null);
 
@@ -227,7 +227,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertTrue(jsonObject.keySet().contains("nullNum"));
     }
 
-    public void testNestedArrayAndObject() throws JSONException {
+    public void test_nested_arrays_and_objects_maintain_their_structure_and_data() throws JSONException {
         JSONArray arr = new JSONArray();
         arr.put("x");
         JSONObject obj = new JSONObject();
@@ -245,7 +245,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals(Integer.valueOf(2), outObj.getInt("y"));
     }
 
-    public void testGetEnumThrows() throws JSONException {
+    public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
         jsonObject.put("e", "VALUE1");
         try {
             jsonObject.getEnum(TestEnum.class, "e");
@@ -255,7 +255,7 @@ public class JSONObjectTest extends GWTTestCase {
         }
     }
 
-    public void testIsNullBehavior() throws JSONException {
+    public void test_json_null_values_are_detected_correctly() throws JSONException {
         jsonObject.put("n", JSONNull.getInstance());
         assertTrue(jsonObject.get("n") == null);
     }
