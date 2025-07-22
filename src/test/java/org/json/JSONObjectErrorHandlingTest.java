@@ -34,18 +34,15 @@ public class JSONObjectErrorHandlingTest extends GWTTestCase {
     }
 
     /**
-     * Tests that retrieving an enum from a string value throws an IllegalArgumentException.
+     * Tests that enum retrieval works correctly for string values.
      *
      * @throws JSONException if there is an error in the JSON operations
      */
-    public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
+    public void test_enum_retrieval_works_correctly_for_string_values() throws JSONException {
         jsonObject.put("e", "VALUE1");
-        try {
-            jsonObject.getEnum(TestEnum.class, "e");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        JSONObjectErrorHandlingTest.TestEnum valueEnum = jsonObject.getEnum(JSONObjectErrorHandlingTest.TestEnum.class, "e");
+        assertNotNull(valueEnum);
+        assertEquals("VALUE1", valueEnum.toString());
     }
 
     /**

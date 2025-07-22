@@ -248,7 +248,22 @@ public class JSONObject implements Serializable {
    * @throws JSONException if the name does not match the enum
    */
   public <E extends Enum<E>> E getEnum(Class<E> clazz, String key) throws JSONException {
-    throw new IllegalArgumentException("Not yet implemented");
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
+    if (jsonObject == null || jsonObject.get(key) == null) {
+      throw new JSONException("JSONObject[" + key + "] not found.");
+    }
+    JSONValue jsonValue = jsonObject.get(key);
+    if (jsonValue.isString() == null) {
+      throw new JSONException("JSONObject[" + key + "] is not a string. Found: " + getType(jsonValue));
+    }
+    String name = jsonValue.isString().stringValue();
+    try {
+      return Enum.valueOf(clazz, name);
+    } catch (IllegalArgumentException e) {
+      throw new JSONException("Value '" + name + "' is not a valid enum constant for " + clazz.getName(), e);
+    }
   }
 
   /**
