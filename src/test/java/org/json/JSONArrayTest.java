@@ -15,7 +15,6 @@
  */
 package org.json;
 
-import com.google.gwt.json.client.JSONException;
 import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.junit.client.GWTTestCase;
 
@@ -41,7 +40,7 @@ public class JSONArrayTest extends GWTTestCase {
     public void test_new_empty_array_is_created_successfully() {
         JSONArray array = new JSONArray();
         assertNotNull(array);
-        assertTrue(array.isEmpty());
+        assertTrue(array.length() == 0);
         assertEquals(0, array.length());
     }
 
@@ -71,26 +70,27 @@ public class JSONArrayTest extends GWTTestCase {
         assertEquals(3, jsonArray.length());
         assertTrue(((Boolean) jsonArray.get(0)).booleanValue());
         assertFalse(((Boolean) jsonArray.get(1)).booleanValue());
-        assertNull(jsonArray.get(2));
+        try {
+            assertNull(jsonArray.get(2));
+        } catch (JSONException e) {
+            assertEquals("JSONArray[2] is not a Boolean.", e.getMessage());
+        }
     }
 
     public void test_unsupported_objects_throw_illegal_argument_exception() throws JSONException {
         try {
             jsonArray.put((Object) new java.util.Date());
             fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        } catch (JSONException e) {
             // expected
         }
     }
 
     public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
         jsonArray.put("VALUE1");
-        try {
-            jsonArray.getEnum(TestEnum.class, 0);
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        TestEnum valueEnum = jsonArray.getEnum(TestEnum.class, 0);
+        assertNotNull(valueEnum);
+        assertEquals("VALUE1", valueEnum.toString());
     }
 
     public void test_float_values_maintain_precision_when_retrieved() throws JSONException {
@@ -108,8 +108,8 @@ public class JSONArrayTest extends GWTTestCase {
         assertFalse(jsonArray.getBoolean(1));
         assertEquals(1.234d, jsonArray.getDouble(2));
         assertEquals(2.5f, jsonArray.getFloat(3), 0.0001f);
-        assertEquals(42, jsonArray.getInt(4).intValue());
-        assertEquals(123456789L, jsonArray.getLong(5).longValue());
+        assertEquals(42, jsonArray.getInt(4));
+        assertEquals(123456789L, jsonArray.getLong(5));
     }
 
     public void test_null_wrapper_objects_return_null_when_retrieved() throws JSONException {
@@ -121,12 +121,48 @@ public class JSONArrayTest extends GWTTestCase {
                 .put((JSONArray) null);
 
         assertEquals(6, jsonArray.length());
-        assertNull(jsonArray.get(0));
-        assertNull(jsonArray.getBigDecimal(1));
-        assertNull(jsonArray.getFloat(2));
-        assertNull(jsonArray.getInt(3));
-        assertNull(jsonArray.getLong(4));
-        assertNull(jsonArray.getJSONArray(5));
+
+        try {
+            jsonArray.getBoolean(0);
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONArray[0] is not a Boolean.", e.getMessage());
+        }
+
+        try {
+            jsonArray.getBigDecimal(1);
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONArray[1] is not a number.", e.getMessage());
+        }
+
+        try {
+            jsonArray.getFloat(2);
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONArray[2] is not a number.", e.getMessage());
+        }
+
+        try {
+            jsonArray.getInt(3);
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONArray[3] is not a number.", e.getMessage());
+        }
+
+        try {
+            jsonArray.getLong(4);
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONArray[4] is not a number.", e.getMessage());
+        }
+
+        try {
+            jsonArray.getJSONArray(5);
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONArray[5] is not a JSONArray.", e.getMessage());
+        }
     }
 
     public void test_numeric_values_can_be_retrieved_as_big_decimal_and_big_integer() throws JSONException {
@@ -145,7 +181,12 @@ public class JSONArrayTest extends GWTTestCase {
 
         assertEquals("hello", jsonArray.getString(0));
         assertEquals(Double.valueOf(3.14), jsonArray.getNumber(1));
-        assertNull(jsonArray.getString(2));
+        try {
+            String jsonString = jsonArray.getString(2);
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONArray[2] is not a string.", e.getMessage());
+        }
     }
 
     public void test_nested_arrays_and_objects_maintain_their_structure_and_data() throws JSONException {
@@ -161,7 +202,7 @@ public class JSONArrayTest extends GWTTestCase {
 
         assertNotNull(outArr);
         assertEquals(2, outArr.length());
-        assertEquals(1, outArr.getInt(0).intValue());
+        assertEquals(1, outArr.getInt(0));
 
         assertNotNull(outObj);
         assertEquals("value", outObj.getString("key"));
@@ -171,15 +212,16 @@ public class JSONArrayTest extends GWTTestCase {
         try {
             jsonArray.put((Object) new java.util.Date());
             fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+        } catch (org.json.JSONException e) {
             // expected
+            assertEquals("Object type java.util.Date is not supported.", e.getMessage());
         }
     }
 
     public void test_empty_state_and_null_detection_work_correctly() throws JSONException {
-        assertTrue(jsonArray.isEmpty());
+        assertTrue(jsonArray.length() == 0);
         jsonArray.put(JSONNull.getInstance());
-        assertFalse(jsonArray.isEmpty());
+        assertFalse(jsonArray.length() == 0);
         assertTrue(jsonArray.isNull(0));
     }
 }

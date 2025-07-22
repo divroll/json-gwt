@@ -16,10 +16,11 @@
 package org.json;
 
 import com.google.gwt.json.client.JSONBoolean;
-import com.google.gwt.json.client.JSONException;
 import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -39,14 +40,28 @@ public class JSONArray {
     this.jsonArray = new com.google.gwt.json.client.JSONArray();
   }
 
+  public JSONArray(String json) throws JSONException {
+    try {
+      this.jsonArray = JSONParser.parseStrict(json).isArray();
+      if (this.jsonArray == null) {
+        throw new JSONException("JSONArray text must begin with '['");
+      }
+    } catch (Exception e) {
+      throw new JSONException("Invalid JSON string", e);
+    }
+  }
+
   public JSONArray(com.google.gwt.json.client.JSONArray jsonArray) {
     this.jsonArray = jsonArray;
   }
 
   public Object get(int index) throws JSONException {
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
     com.google.gwt.json.client.JSONValue jsonValue = jsonArray.get(index);
     if (jsonValue == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     if (jsonValue.isObject() != null) {
       return new JSONObject(jsonValue.isObject());
@@ -65,328 +80,560 @@ public class JSONArray {
   }
 
   public BigDecimal getBigDecimal(int index) throws JSONException {
-    if (jsonArray == null && jsonArray.get(index) != null) {
-      return null;
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONNumber num = val.isNumber();
     if (num == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
     return BigDecimal.valueOf(num.doubleValue());
   }
 
   public BigInteger getBigInteger(int index) throws JSONException {
-    if (jsonArray == null && jsonArray.get(index) != null) {
-      return null;
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONNumber num = val.isNumber();
     if (num == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
     return BigInteger.valueOf(Double.valueOf(num.doubleValue()).longValue());
   }
 
-  public Boolean getBoolean(int index) throws JSONException {
-    if (jsonArray == null || jsonArray.get(index) == null) {
-      return false;
+  public boolean getBoolean(int index) throws JSONException {
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONBoolean bool = val.isBoolean();
     if (bool == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a Boolean.");
     }
     return bool.booleanValue();
   }
 
-  public Double getDouble(int index) throws JSONException {
-    if (jsonArray == null || jsonArray.get(index) == null) {
-      return null;
+  public double getDouble(int index) throws JSONException {
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONNumber num = val.isNumber();
     if (num == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
     return num.doubleValue();
   }
 
+  /**
+   * Retrieve an enum constant by its name at the given index.
+   * Returns null if the entry is missing or not a string.
+   * Throws IllegalArgumentException if the name doesn't match the enum.
+   */
   public <E extends Enum<E>> E getEnum(Class<E> clazz, int index) throws JSONException {
-    throw new IllegalArgumentException("Not yet implemented");
-  }
-
-  public Float getFloat(int index) throws JSONException {
     if (jsonArray == null || jsonArray.get(index) == null) {
       return null;
     }
-    com.google.gwt.json.client.JSONNumber num = jsonArray.get(index).isNumber();
-    if (num == null) {
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONString js = val.isString();
+    if (js == null) {
       return null;
+    }
+    String name = js.stringValue();
+    try {
+      return Enum.valueOf(clazz, name);
+    } catch (IllegalArgumentException e) {
+      throw new JSONException(
+              "Value '" + name + "' is not a valid enum constant for " + clazz.getName(), e);
+    }
+  }
+
+  public float getFloat(int index) throws JSONException {
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONNumber num = val.isNumber();
+    if (num == null) {
+      throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
     return (float) num.doubleValue();
   }
 
-  public Integer getInt(int index) throws JSONException {
-    if (jsonArray == null || jsonArray.get(index) == null) {
-      return null;
+  public int getInt(int index) throws JSONException {
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONNumber num = val.isNumber();
     if (num == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
-    return Integer.valueOf(Double.valueOf(num.doubleValue()).intValue());
+    return (int) num.doubleValue();
   }
 
   public JSONArray getJSONArray(int index) throws JSONException {
-    if (jsonArray == null
-            || jsonArray.get(index) == null
-            || jsonArray.get(index).isArray() == null) {
-      return null;
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
-    com.google.gwt.json.client.JSONArray array = jsonArray.get(index).isArray();
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONArray array = val.isArray();
+    if (array == null) {
+      throw new JSONException("JSONArray[" + index + "] is not a JSONArray.");
+    }
     return new JSONArray(array);
   }
 
   public JSONObject getJSONObject(int index) throws JSONException {
-    if (jsonArray == null
-            || jsonArray.get(index) == null
-            || jsonArray.get(index).isObject() == null) {
-      return null;
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
-    com.google.gwt.json.client.JSONObject jsonObject = jsonArray.get(index).isObject();
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    com.google.gwt.json.client.JSONObject jsonObject = val.isObject();
+    if (jsonObject == null) {
+      throw new JSONException("JSONArray[" + index + "] is not a JSONObject.");
+    }
     return new JSONObject(jsonObject);
   }
 
-  public Long getLong(int index) throws JSONException {
-    if (jsonArray == null || jsonArray.get(index) == null) {
-      return null;
+  public long getLong(int index) throws JSONException {
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONNumber num = val.isNumber();
     if (num == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
-    return Long.valueOf(Double.valueOf(num.doubleValue()).longValue());
+    return (long) num.doubleValue();
   }
 
   public Number getNumber(int index) throws JSONException {
-    if (jsonArray == null && jsonArray.get(index) != null) {
-      return null;
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONNumber num = val.isNumber();
     if (num == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
-    return Double.valueOf(num.doubleValue());
+    return num.doubleValue();
   }
 
   public String getString(int index) throws JSONException {
-    if (jsonArray == null && jsonArray.get(index) != null) {
-      return null;
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
     }
     com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
     com.google.gwt.json.client.JSONString str = val.isString();
     if (str == null) {
-      return null;
+      throw new JSONException("JSONArray[" + index + "] is not a string.");
     }
     return str.stringValue();
   }
 
-  public boolean isEmpty() {
-    return jsonArray.size() == 0;
-  }
-
   public boolean isNull(int index) {
-    return jsonArray.get(index).isNull() != null;
+    if (index < 0 || index >= jsonArray.size()) {
+      return false;
+    }
+    com.google.gwt.json.client.JSONValue val = jsonArray.get(index);
+    if (val == null) {
+      return false;
+    }
+    return val.isNull() != null;
   }
 
-  public JSONArray put(boolean value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
+  public int length() {
+    return jsonArray.size();
+  }
+
+  public JSONArray put(boolean value) {
     jsonArray.set(jsonArray.size(), JSONBoolean.getInstance(value));
     return this;
   }
 
-  public JSONArray put(Boolean value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
+  public JSONArray put(Boolean value) {
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
-      return this;
+    } else {
+      jsonArray.set(jsonArray.size(), JSONBoolean.getInstance(value));
     }
-    jsonArray.set(jsonArray.size(), JSONBoolean.getInstance(value));
     return this;
   }
 
   public JSONArray put(double value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
     }
     jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
   public JSONArray put(Double value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
       return this;
+    }
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
     }
     jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
   public JSONArray put(float value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
+    if (Float.isNaN(value) || Float.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
     }
     jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
   public JSONArray put(Float value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
       return this;
+    }
+    if (Float.isNaN(value) || Float.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
     }
     jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
-  public JSONArray put(int value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
+  public JSONArray put(int value) {
     jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
-  public JSONArray put(Integer value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
+  public JSONArray put(Integer value) {
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
-      return this;
+    } else {
+      jsonArray.set(jsonArray.size(), new JSONNumber(value));
     }
+    return this;
+  }
+
+  public JSONArray put(long value) {
     jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
-  public JSONArray put(long value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
+  public JSONArray put(Long value) {
+    if (value == null) {
+      jsonArray.set(jsonArray.size(), JSONNull.getInstance());
+    } else {
+      jsonArray.set(jsonArray.size(), new JSONNumber(value));
     }
-    jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
-  public JSONArray put(Long value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
+  public JSONArray put(String value) {
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
-      return this;
+    } else {
+      jsonArray.set(jsonArray.size(), new JSONString(value));
     }
-    jsonArray.set(jsonArray.size(), new JSONNumber(value));
     return this;
   }
 
-  public JSONArray put(JSONArray value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
+  public JSONArray put(JSONArray value) {
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
-      return this;
+    } else {
+      jsonArray.set(jsonArray.size(), value.asJSONArray());
     }
-    jsonArray.set(jsonArray.size(), value.asJSONArray());
     return this;
   }
 
-  public JSONArray put(JSONObject value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
+  public JSONArray put(JSONObject value) {
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
-      return this;
+    } else {
+      jsonArray.set(jsonArray.size(), value.asJSONObject());
     }
-    jsonArray.set(jsonArray.size(), value.asJSONObject());
     return this;
   }
 
-  public JSONArray put(JSONNull value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
-    if (value == null) {
-      jsonArray.set(jsonArray.size(), JSONNull.getInstance());
-      return this;
-    }
-    jsonArray.set(jsonArray.size(), value);
+  public JSONArray put(JSONNull value) {
+    jsonArray.set(jsonArray.size(), JSONNull.getInstance());
     return this;
   }
 
   public JSONArray put(Object value) throws JSONException {
-    if (jsonArray == null) {
-      jsonArray = new com.google.gwt.json.client.JSONArray();
-    }
     if (value == null) {
       jsonArray.set(jsonArray.size(), JSONNull.getInstance());
       return this;
     }
-    if (value != null) {
-      if (value instanceof Boolean || value.getClass().getName().equals(boolean.class.getName())) {
-        jsonArray.set(jsonArray.size(), JSONBoolean.getInstance((Boolean) value));
-      } else if (value instanceof String) {
-        jsonArray.set(jsonArray.size(), new JSONString((String) value));
-      } else if (value instanceof Double || value.getClass()
-          .getName()
-          .equals(double.class.getName())) {
-        jsonArray.set(jsonArray.size(), new JSONNumber((Double) value));
-      } else if (value instanceof Float || value.getClass()
-          .getName()
-          .equals(float.class.getName())) {
-        jsonArray.set(jsonArray.size(), new JSONNumber((Float) value));
-      } else if (value instanceof Long || value.getClass().getName().equals(long.class.getName())) {
-        jsonArray.set(jsonArray.size(), new JSONNumber((Long) value));
-      } else if (value instanceof Integer || value.getClass()
-          .getName()
-          .equals(double.class.getName())) {
-        jsonArray.set(jsonArray.size(), new JSONNumber((Integer) value));
-      } else if (value instanceof JSONArray) {
-        JSONArray jsonArray = (JSONArray) value;
-        this.jsonArray.set(this.jsonArray.size(), (jsonArray.asJSONArray()));
-      } else if (value instanceof JSONObject) {
-        JSONObject jsonObject = (JSONObject) value;
-        jsonArray.set(jsonArray.size(), jsonObject.asJSONObject());
-      } else if (value instanceof JSONNull) {
-        jsonArray.set(jsonArray.size(), (JSONNull) value);
-      } else {
-        throw new IllegalArgumentException(
-            "Object type " + value.getClass().getName() + " is not supported.");
+
+    if (value instanceof Boolean || value.getClass().getName().equals(boolean.class.getName())) {
+      jsonArray.set(jsonArray.size(), JSONBoolean.getInstance((Boolean) value));
+    } else if (value instanceof String) {
+      jsonArray.set(jsonArray.size(), new JSONString((String) value));
+    } else if (value instanceof Double || value.getClass().getName().equals(double.class.getName())) {
+      Double d = (Double) value;
+      if (Double.isNaN(d) || Double.isInfinite(d)) {
+        throw new JSONException("JSON does not allow non-finite numbers.");
       }
-      return this;
+      jsonArray.set(jsonArray.size(), new JSONNumber(d));
+    } else if (value instanceof Float || value.getClass().getName().equals(float.class.getName())) {
+      Float f = (Float) value;
+      if (Float.isNaN(f) || Float.isInfinite(f)) {
+        throw new JSONException("JSON does not allow non-finite numbers.");
+      }
+      jsonArray.set(jsonArray.size(), new JSONNumber(f));
+    } else if (value instanceof Long || value.getClass().getName().equals(long.class.getName())) {
+      jsonArray.set(jsonArray.size(), new JSONNumber((Long) value));
+    } else if (value instanceof Integer || value.getClass().getName().equals(int.class.getName())) {
+      jsonArray.set(jsonArray.size(), new JSONNumber((Integer) value));
+    } else if (value instanceof JSONArray) {
+      JSONArray jsonArr = (JSONArray) value;
+      jsonArray.set(jsonArray.size(), jsonArr.asJSONArray());
+    } else if (value instanceof JSONObject) {
+      JSONObject jso = (JSONObject) value;
+      jsonArray.set(jsonArray.size(), jso.asJSONObject());
+    } else if (value instanceof JSONNull) {
+      jsonArray.set(jsonArray.size(), (JSONNull) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONValue) {
+      jsonArray.set(jsonArray.size(), (com.google.gwt.json.client.JSONValue) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONObject) {
+      jsonArray.set(jsonArray.size(), (com.google.gwt.json.client.JSONObject) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONArray) {
+      jsonArray.set(jsonArray.size(), (com.google.gwt.json.client.JSONArray) value);
     } else {
-      jsonArray.set(jsonArray.size(), JSONObject.NULL);
-      return this;
+      throw new JSONException("Object type " + value.getClass().getName() + " is not supported.");
     }
+    return this;
   }
 
-  public int length() {
-    return jsonArray.size();
+  public JSONArray put(int index, boolean value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    jsonArray.set(index, JSONBoolean.getInstance(value));
+    return this;
+  }
+
+  public JSONArray put(int index, Boolean value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+    } else {
+      jsonArray.set(index, JSONBoolean.getInstance(value));
+    }
+    return this;
+  }
+
+  public JSONArray put(int index, double value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
+    jsonArray.set(index, new JSONNumber(value));
+    return this;
+  }
+
+  public JSONArray put(int index, Double value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+      return this;
+    }
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
+    jsonArray.set(index, new JSONNumber(value));
+    return this;
+  }
+
+  public JSONArray put(int index, float value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (Float.isNaN(value) || Float.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
+    jsonArray.set(index, new JSONNumber(value));
+    return this;
+  }
+
+  public JSONArray put(int index, Float value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+      return this;
+    }
+    if (Float.isNaN(value) || Float.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
+    jsonArray.set(index, new JSONNumber(value));
+    return this;
+  }
+
+  public JSONArray put(int index, int value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    jsonArray.set(index, new JSONNumber(value));
+    return this;
+  }
+
+  public JSONArray put(int index, Integer value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+    } else {
+      jsonArray.set(index, new JSONNumber(value));
+    }
+    return this;
+  }
+
+  public JSONArray put(int index, long value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    jsonArray.set(index, new JSONNumber(value));
+    return this;
+  }
+
+  public JSONArray put(int index, Long value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+    } else {
+      jsonArray.set(index, new JSONNumber(value));
+    }
+    return this;
+  }
+
+  public JSONArray put(int index, String value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+    } else {
+      jsonArray.set(index, new JSONString(value));
+    }
+    return this;
+  }
+
+  public JSONArray put(int index, JSONArray value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+    } else {
+      jsonArray.set(index, value.asJSONArray());
+    }
+    return this;
+  }
+
+  public JSONArray put(int index, JSONObject value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+    } else {
+      jsonArray.set(index, value.asJSONObject());
+    }
+    return this;
+  }
+
+  public JSONArray put(int index, JSONNull value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    jsonArray.set(index, JSONNull.getInstance());
+    return this;
+  }
+
+  public JSONArray put(int index, Object value) throws JSONException {
+    if (index < 0) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+
+    if (value == null) {
+      jsonArray.set(index, JSONNull.getInstance());
+      return this;
+    }
+
+    if (value instanceof Boolean || value.getClass().getName().equals(boolean.class.getName())) {
+      jsonArray.set(index, JSONBoolean.getInstance((Boolean) value));
+    } else if (value instanceof String) {
+      jsonArray.set(index, new JSONString((String) value));
+    } else if (value instanceof Double || value.getClass().getName().equals(double.class.getName())) {
+      Double d = (Double) value;
+      if (Double.isNaN(d) || Double.isInfinite(d)) {
+        throw new JSONException("JSON does not allow non-finite numbers.");
+      }
+      jsonArray.set(index, new JSONNumber(d));
+    } else if (value instanceof Float || value.getClass().getName().equals(float.class.getName())) {
+      Float f = (Float) value;
+      if (Float.isNaN(f) || Float.isInfinite(f)) {
+        throw new JSONException("JSON does not allow non-finite numbers.");
+      }
+      jsonArray.set(index, new JSONNumber(f));
+    } else if (value instanceof Long || value.getClass().getName().equals(long.class.getName())) {
+      jsonArray.set(index, new JSONNumber((Long) value));
+    } else if (value instanceof Integer || value.getClass().getName().equals(int.class.getName())) {
+      jsonArray.set(index, new JSONNumber((Integer) value));
+    } else if (value instanceof JSONArray) {
+      JSONArray jsonArr = (JSONArray) value;
+      jsonArray.set(index, jsonArr.asJSONArray());
+    } else if (value instanceof JSONObject) {
+      JSONObject jso = (JSONObject) value;
+      jsonArray.set(index, jso.asJSONObject());
+    } else if (value instanceof JSONNull) {
+      jsonArray.set(index, (JSONNull) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONValue) {
+      jsonArray.set(index, (com.google.gwt.json.client.JSONValue) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONObject) {
+      jsonArray.set(index, (com.google.gwt.json.client.JSONObject) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONArray) {
+      jsonArray.set(index, (com.google.gwt.json.client.JSONArray) value);
+    } else {
+      throw new JSONException("Object type " + value.getClass().getName() + " is not supported.");
+    }
+    return this;
+  }
+
+  public Object remove(int index) throws JSONException {
+    if (index < 0 || index >= jsonArray.size()) {
+      throw new JSONException("JSONArray[" + index + "] not found.");
+    }
+    Object value = get(index);
+
+    // Shift elements left to fill the gap
+    for (int i = index; i < jsonArray.size() - 1; i++) {
+      jsonArray.set(i, jsonArray.get(i + 1));
+    }
+
+    // Create a new array with one less element
+    com.google.gwt.json.client.JSONArray newArray = new com.google.gwt.json.client.JSONArray();
+    for (int i = 0; i < jsonArray.size() - 1; i++) {
+      newArray.set(i, jsonArray.get(i));
+    }
+    this.jsonArray = newArray;
+
+    return value;
   }
 
   public com.google.gwt.json.client.JSONArray asJSONArray() {
@@ -395,10 +642,8 @@ public class JSONArray {
 
   @Override
   public String toString() {
-    if (jsonArray == null) {
-      return null;
-    } else if (jsonArray.toString() == "null") {
-      return null;
+    if (this.jsonArray == null) {
+      return "null";
     }
     return this.jsonArray.toString();
   }

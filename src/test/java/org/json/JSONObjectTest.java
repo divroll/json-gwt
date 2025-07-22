@@ -73,9 +73,14 @@ public class JSONObjectTest extends GWTTestCase {
         jsonObject.put("flag2", Boolean.FALSE);
         jsonObject.put("flag3", (Boolean) null);
 
-        assertTrue(jsonObject.getBoolean("flag1"));
-        assertFalse(jsonObject.getBoolean("flag2"));
-        assertNull(jsonObject.getBoolean("flag3"));
+        try {
+            assertTrue(jsonObject.getBoolean("flag1"));
+            assertFalse(jsonObject.getBoolean("flag2"));
+            assertNull(jsonObject.getBoolean("flag3"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[flag3] is not a Boolean. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_double_values_maintain_precision_when_stored_and_retrieved() throws JSONException {
@@ -93,7 +98,12 @@ public class JSONObjectTest extends GWTTestCase {
         jsonObject.put("null", (Double) null);
 
         assertEquals(2.71828, jsonObject.getDouble("value"), 0.00001);
-        assertNull(jsonObject.getDouble("null"));
+        try {
+            assertNull(jsonObject.getDouble("null"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[null] is not a number. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_float_values_maintain_precision_when_stored_and_retrieved() throws JSONException {
@@ -109,7 +119,12 @@ public class JSONObjectTest extends GWTTestCase {
         jsonObject.put("null", (Float) null);
 
         assertEquals(2.5f, jsonObject.getFloat("value"), 0.001);
-        assertNull(jsonObject.getFloat("null"));
+        try {
+            assertNull(jsonObject.getFloat("null"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[null] is not a number. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_integer_values_are_stored_and_retrieved_with_correct_range() throws JSONException {
@@ -117,33 +132,43 @@ public class JSONObjectTest extends GWTTestCase {
         jsonObject.put("max", Integer.MAX_VALUE);
         jsonObject.put("min", Integer.MIN_VALUE);
 
-        assertEquals(Integer.valueOf(42), jsonObject.getInt("answer"));
-        assertEquals(Integer.valueOf(Integer.MAX_VALUE), jsonObject.getInt("max"));
-        assertEquals(Integer.valueOf(Integer.MIN_VALUE), jsonObject.getInt("min"));
+        assertEquals(42, jsonObject.getInt("answer"));
+        assertEquals(Integer.MAX_VALUE, jsonObject.getInt("max"));
+        assertEquals(Integer.MIN_VALUE, jsonObject.getInt("min"));
     }
 
     public void test_integer_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Integer.valueOf(100));
         jsonObject.put("null", (Integer) null);
 
-        assertEquals(Integer.valueOf(100), jsonObject.getInt("value"));
-        assertNull(jsonObject.getInt("null"));
+        assertEquals(100, jsonObject.getInt("value"));
+        try {
+            assertNull(jsonObject.getInt("null"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[null] is not a number. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_long_values_are_stored_and_retrieved_with_full_precision() throws JSONException {
         jsonObject.put("big", 123456789L);
         jsonObject.put("max", Long.MAX_VALUE);
 
-        assertEquals(Long.valueOf(123456789L), jsonObject.getLong("big"));
-        assertEquals(Long.valueOf(Long.MAX_VALUE), jsonObject.getLong("max"));
+        assertEquals(123456789L, jsonObject.getLong("big"));
+        assertEquals(Long.MAX_VALUE, jsonObject.getLong("max"));
     }
 
     public void test_long_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Long.valueOf(987654321L));
         jsonObject.put("null", (Long) null);
 
-        assertEquals(Long.valueOf(987654321L), jsonObject.getLong("value"));
-        assertNull(jsonObject.getLong("null"));
+        assertEquals(987654321L, jsonObject.getLong("value"));
+        try {
+            assertNull(jsonObject.getLong("null"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[null] is not a number. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_string_values_including_empty_and_null_are_stored_correctly() throws JSONException {
@@ -153,7 +178,12 @@ public class JSONObjectTest extends GWTTestCase {
 
         assertEquals("John Doe", jsonObject.getString("name"));
         assertEquals("", jsonObject.getString("empty"));
-        assertNull(jsonObject.getString("null"));
+        try {
+            assertNull(jsonObject.getString("null"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[null] is not a string. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_json_arrays_including_null_maintain_structure_and_content() throws JSONException {
@@ -170,7 +200,12 @@ public class JSONObjectTest extends GWTTestCase {
         assertEquals("item1", retrieved.getString(0));
         assertEquals("item2", retrieved.getString(1));
 
-        assertNull(jsonObject.getJSONArray("nullArray"));
+        try {
+            assertNull(jsonObject.getJSONArray("nullArray"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[nullArray] is not a JSONArray. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_all_primitive_types_work_together_in_single_object() throws JSONException {
@@ -182,10 +217,10 @@ public class JSONObjectTest extends GWTTestCase {
                 .put("str", "test");
 
         assertTrue(jsonObject.getBoolean("bool"));
-        assertEquals(Double.valueOf(2.5d), jsonObject.getDouble("dbl"));
-        assertEquals(Float.valueOf(1.25f), jsonObject.getFloat("flt"));
-        assertEquals(Integer.valueOf(10), jsonObject.getInt("int"));
-        assertEquals(Long.valueOf(100L), jsonObject.getLong("long"));
+        assertEquals(2.5d, jsonObject.getDouble("dbl"));
+        assertEquals(1.25f, jsonObject.getFloat("flt"));
+        assertEquals(10, jsonObject.getInt("int"));
+        assertEquals(100L, jsonObject.getLong("long"));
         assertEquals("test", jsonObject.getString("str"));
     }
 
@@ -199,14 +234,54 @@ public class JSONObjectTest extends GWTTestCase {
                 .put("arr", (JSONArray) null)
                 .put("obj", (JSONObject) null);
 
-        assertNull(jsonObject.getBoolean("b"));
-        assertNull(jsonObject.getDouble("d"));
-        assertNull(jsonObject.getFloat("f"));
-        assertNull(jsonObject.getInt("i"));
-        assertNull(jsonObject.getLong("l"));
-        assertNull(jsonObject.getString("s"));
-        assertNull(jsonObject.getJSONArray("arr"));
-        assertNull(jsonObject.getJSONObject("obj"));
+        try {
+            assertNull(jsonObject.getBoolean("b"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[b] is not a Boolean. Found: JSONNull", e.getMessage());
+        }
+        try {
+            assertNull(jsonObject.getDouble("d"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[d] is not a number. Found: JSONNull", e.getMessage());
+        }
+        try {
+            assertNull(jsonObject.getFloat("f"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[f] is not a number. Found: JSONNull", e.getMessage());
+        }
+        try {
+            assertNull(jsonObject.getInt("i"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[i] is not a number. Found: JSONNull", e.getMessage());
+        }
+        try {
+            assertNull(jsonObject.getLong("l"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[l] is not a number. Found: JSONNull", e.getMessage());
+        }
+        try {
+            assertNull(jsonObject.getString("s"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[s] is not a string. Found: JSONNull", e.getMessage());
+        }
+        try {
+            assertNull(jsonObject.getJSONArray("arr"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[arr] is not a JSONArray. Found: JSONNull", e.getMessage());
+        }
+        try {
+            assertNull(jsonObject.getJSONObject("obj"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[obj] is not a JSONObject. Found: JSONNull", e.getMessage());
+        }
     }
 
     public void test_numeric_values_can_be_retrieved_as_big_decimal_and_big_integer() throws JSONException {
@@ -221,8 +296,13 @@ public class JSONObjectTest extends GWTTestCase {
         jsonObject.put("num", 5.0d)
                 .put("nullNum", (Number) null);
 
-        assertEquals(Double.valueOf(5.0d), jsonObject.getNumber("num"));
-        assertNull(jsonObject.getNumber("nullNum"));
+        assertEquals(5.0d, jsonObject.getNumber("num"));
+        try {
+            assertNull(jsonObject.getNumber("nullNum"));
+            fail("Expected JSONException");
+        } catch (JSONException e) {
+            assertEquals("JSONObject[nullNum] is not a number. Found: JSONNull", e.getMessage());
+        }
         assertTrue(jsonObject.keySet().contains("num"));
         assertTrue(jsonObject.keySet().contains("nullNum"));
     }
@@ -242,7 +322,7 @@ public class JSONObjectTest extends GWTTestCase {
         assertNotNull(outArr);
         assertEquals("x", outArr.getString(0));
         assertNotNull(outObj);
-        assertEquals(Integer.valueOf(2), outObj.getInt("y"));
+        assertEquals(2, outObj.getInt("y"));
     }
 
     public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {

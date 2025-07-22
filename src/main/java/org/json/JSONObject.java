@@ -17,7 +17,6 @@ package org.json;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONBoolean;
-import com.google.gwt.json.client.JSONException;
 import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONParser;
@@ -47,17 +46,44 @@ public class JSONObject {
     this.jsonObject = new com.google.gwt.json.client.JSONObject();
   }
 
-  public JSONObject(String json) {
-    this.jsonObject = JSONParser.parseStrict(json).isObject();
+  public JSONObject(String json) throws JSONException {
+    try {
+      this.jsonObject = JSONParser.parseStrict(json).isObject();
+      if (this.jsonObject == null) {
+        throw new JSONException("JSONObject text must begin with '{'");
+      }
+    } catch (Exception e) {
+      throw new JSONException("Invalid JSON string", e);
+    }
   }
 
   public JSONObject(com.google.gwt.json.client.JSONObject jsonObject) {
     this.jsonObject = jsonObject;
   }
 
+  private String getType(JSONValue jsonValue) {
+    if (jsonValue.isObject() != null) {
+      return "JSONObject";
+    } else if (jsonValue.isArray() != null) {
+      return "JSONArray";
+    } else if (jsonValue.isNull() != null) {
+      return "JSONNull";
+    } else if (jsonValue.isBoolean() != null) {
+      return "Boolean";
+    } else if (jsonValue.isString() != null) {
+      return "String";
+    } else if (jsonValue.isNumber() != null) {
+      return "Number";
+    }
+    return "Unknown";
+  }
+
   public Object get(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isObject() != null) {
@@ -77,60 +103,75 @@ public class JSONObject {
   }
 
   public JSONObject getJSONObject(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     com.google.gwt.json.client.JSONObject jsonObjectObject = jsonValue.isObject();
     if (jsonObjectObject != null) {
       return new JSONObject(jsonObjectObject);
     } else {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a JSONObject. Found: " + getType(jsonValue));
     }
   }
 
   public BigDecimal getBigDecimal(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isNumber() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a number. Found: " + getType(jsonValue));
     }
     double value = jsonValue.isNumber().doubleValue();
     return BigDecimal.valueOf(value);
   }
 
   public BigInteger getBigInteger(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isNumber() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a number. Found: " + getType(jsonValue));
     }
     double value = jsonValue.isNumber().doubleValue();
     return BigInteger.valueOf(Double.valueOf(value).longValue());
   }
 
-  public Boolean getBoolean(String key) throws JSONException {
+  public boolean getBoolean(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isBoolean() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a Boolean. Found: " + getType(jsonValue));
     }
     return jsonValue.isBoolean().booleanValue();
   }
 
-  public Double getDouble(String key) throws JSONException {
+  public double getDouble(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isNumber() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a number. Found: " + getType(jsonValue));
     }
     return jsonValue.isNumber().doubleValue();
   }
@@ -139,76 +180,113 @@ public class JSONObject {
     throw new IllegalArgumentException("Not yet implemented");
   }
 
-  public Float getFloat(String key) throws JSONException {
+  public float getFloat(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isNumber() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a number. Found: " + getType(jsonValue));
     }
-    return Float.valueOf(Double.valueOf(jsonValue.isNumber().doubleValue()).floatValue());
+    return (float) jsonValue.isNumber().doubleValue();
   }
 
-  public Integer getInt(String key) throws JSONException {
+  public int getInt(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isNumber() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a number. Found: " + getType(jsonValue));
     }
-    return Integer.valueOf(Double.valueOf(jsonValue.isNumber().doubleValue()).intValue());
+    return (int) jsonValue.isNumber().doubleValue();
   }
 
   public JSONArray getJSONArray(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     com.google.gwt.json.client.JSONArray jsonArray = jsonValue.isArray();
     if (jsonArray != null) {
       return new JSONArray(jsonArray);
     } else {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a JSONArray. Found: " + getType(jsonValue));
     }
   }
 
-  public Long getLong(String key) throws JSONException {
+  public long getLong(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isNumber() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a number. Found: " + getType(jsonValue));
     }
-    return Long.valueOf(Double.valueOf(jsonValue.isNumber().doubleValue()).longValue());
+    return (long) jsonValue.isNumber().doubleValue();
   }
 
   public Number getNumber(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isNumber() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a number. Found: " + getType(jsonValue));
     }
-    return Double.valueOf(
-            Double.valueOf(jsonValue.isNumber().doubleValue()).doubleValue());
+    return jsonValue.isNumber().doubleValue();
   }
 
   public String getString(String key) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null || jsonObject.get(key) == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] not found.");
     }
     JSONValue jsonValue = jsonObject.get(key);
     if (jsonValue.isString() == null) {
-      return null;
+      throw new JSONException("JSONObject[" + key + "] is not a string. Found: " + getType(jsonValue));
     }
     return jsonValue.isString().stringValue();
   }
 
+  public boolean has(String key) {
+    if (key == null) {
+      return false;
+    }
+    return jsonObject != null && jsonObject.get(key) != null;
+  }
+
+  public boolean isNull(String key) {
+    if (key == null) {
+      return false;
+    }
+    if (jsonObject == null || jsonObject.get(key) == null) {
+      return false;
+    }
+    return jsonObject.get(key).isNull() != null;
+  }
+
   public JSONObject put(String key, boolean value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -217,6 +295,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, Boolean value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -229,6 +310,12 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, double value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -237,6 +324,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, Double value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -244,11 +334,20 @@ public class JSONObject {
       jsonObject.put(key, JSONNull.getInstance());
       return this;
     }
+    if (Double.isNaN(value) || Double.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
     jsonObject.put(key, new JSONNumber(value));
     return this;
   }
 
   public JSONObject put(String key, float value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
+    if (Float.isNaN(value) || Float.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -257,6 +356,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, Float value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -264,11 +366,17 @@ public class JSONObject {
       jsonObject.put(key, JSONNull.getInstance());
       return this;
     }
+    if (Float.isNaN(value) || Float.isInfinite(value)) {
+      throw new JSONException("JSON does not allow non-finite numbers.");
+    }
     jsonObject.put(key, new JSONNumber(value));
     return this;
   }
 
   public JSONObject put(String key, int value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -277,6 +385,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, Integer value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -289,6 +400,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, long value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -297,6 +411,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, Long value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -309,6 +426,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, String value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -321,6 +441,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, JSONArray value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -333,6 +456,9 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, JSONObject value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -345,18 +471,20 @@ public class JSONObject {
   }
 
   public JSONObject put(String key, JSONNull value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
-    if (value == null) {
-      jsonObject.put(key, JSONNull.getInstance());
-      return this;
-    }
-    jsonObject.put(key, value);
+    jsonObject.put(key, JSONNull.getInstance());
     return this;
   }
 
   public JSONObject put(String key, Object value) throws JSONException {
+    if (key == null) {
+      throw new JSONException("Null key.");
+    }
     if (jsonObject == null) {
       jsonObject = new com.google.gwt.json.client.JSONObject();
     }
@@ -364,48 +492,45 @@ public class JSONObject {
       jsonObject.put(key, JSONNull.getInstance());
       return this;
     }
-    if (value != null) {
-      if (value instanceof Boolean || value.getClass().getName().equals(boolean.class.getName())) {
-        jsonObject.put(key, JSONBoolean.getInstance((Boolean) value));
-      } else if (value instanceof String) {
-        jsonObject.put(key, new JSONString((String) value));
-      } else if (value instanceof Double || value.getClass()
-              .getName()
-              .equals(double.class.getName())) {
-        jsonObject.put(key, new JSONNumber((Double) value));
-      } else if (value instanceof Float || value.getClass()
-              .getName()
-              .equals(float.class.getName())) {
-        jsonObject.put(key, new JSONNumber((Float) value));
-      } else if (value instanceof Long || value.getClass().getName().equals(long.class.getName())) {
-        jsonObject.put(key, new JSONNumber((Long) value));
-      } else if (value instanceof Integer || value.getClass()
-              .getName()
-              .equals(double.class.getName())) {
-        jsonObject.put(key, new JSONNumber((Integer) value));
-      } else if (value instanceof JSONArray) {
-        JSONArray jsonArray = (JSONArray) value;
-        jsonObject.put(key, (jsonArray.asJSONArray()));
-      } else if (value instanceof JSONObject) {
-        JSONObject jso = (JSONObject) value;
-        jsonObject.put(key, jso.asJSONObject());
-      } else if (value instanceof JSONNull) {
-        jsonObject.put(key, (JSONNull) value);
-      } else if (value instanceof com.google.gwt.json.client.JSONValue) {
-        jsonObject.put(key, (com.google.gwt.json.client.JSONValue) value);
-      } else if (value instanceof com.google.gwt.json.client.JSONObject) {
-        jsonObject.put(key, (com.google.gwt.json.client.JSONObject) value);
-      } else if (value instanceof com.google.gwt.json.client.JSONArray) {
-        jsonObject.put(key, (com.google.gwt.json.client.JSONArray) value);
-      } else {
-        throw new IllegalArgumentException(
-                "Object type " + value.getClass().getName() + " is not supported.");
+
+    if (value instanceof Boolean || value.getClass().getName().equals(boolean.class.getName())) {
+      jsonObject.put(key, JSONBoolean.getInstance((Boolean) value));
+    } else if (value instanceof String) {
+      jsonObject.put(key, new JSONString((String) value));
+    } else if (value instanceof Double || value.getClass().getName().equals(double.class.getName())) {
+      Double d = (Double) value;
+      if (Double.isNaN(d) || Double.isInfinite(d)) {
+        throw new JSONException("JSON does not allow non-finite numbers.");
       }
-      return this;
+      jsonObject.put(key, new JSONNumber(d));
+    } else if (value instanceof Float || value.getClass().getName().equals(float.class.getName())) {
+      Float f = (Float) value;
+      if (Float.isNaN(f) || Float.isInfinite(f)) {
+        throw new JSONException("JSON does not allow non-finite numbers.");
+      }
+      jsonObject.put(key, new JSONNumber(f));
+    } else if (value instanceof Long || value.getClass().getName().equals(long.class.getName())) {
+      jsonObject.put(key, new JSONNumber((Long) value));
+    } else if (value instanceof Integer || value.getClass().getName().equals(int.class.getName())) {
+      jsonObject.put(key, new JSONNumber((Integer) value));
+    } else if (value instanceof JSONArray) {
+      JSONArray jsonArray = (JSONArray) value;
+      jsonObject.put(key, (jsonArray.asJSONArray()));
+    } else if (value instanceof JSONObject) {
+      JSONObject jso = (JSONObject) value;
+      jsonObject.put(key, jso.asJSONObject());
+    } else if (value instanceof JSONNull) {
+      jsonObject.put(key, (JSONNull) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONValue) {
+      jsonObject.put(key, (com.google.gwt.json.client.JSONValue) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONObject) {
+      jsonObject.put(key, (com.google.gwt.json.client.JSONObject) value);
+    } else if (value instanceof com.google.gwt.json.client.JSONArray) {
+      jsonObject.put(key, (com.google.gwt.json.client.JSONArray) value);
     } else {
-      jsonObject.put(key, JSONObject.NULL);
-      return this;
+      throw new JSONException("Object type " + value.getClass().getName() + " is not supported.");
     }
+    return this;
   }
 
   public Set<String> keySet() {
@@ -419,12 +544,8 @@ public class JSONObject {
   @Override
   public String toString() {
     if (this.jsonObject == null) {
-      return null;
-    } else if (this.jsonObject.toString() == "null") {
-      return null;
+      return "null";
     }
-    String jsonString = this.jsonObject.toString();
-    Window.alert(jsonString);
-    return jsonString;
+    return this.jsonObject.toString();
   }
 }
