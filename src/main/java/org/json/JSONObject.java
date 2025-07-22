@@ -808,4 +808,17 @@ public class JSONObject implements Serializable {
     }
     return this.jsonObject.toString();
   }
+
+  /**
+   * Returns an array of the keys in the JSONObject.
+   *
+   * @return an array of the keys in the JSONObject
+   */
+  public static String[] getNames(JSONObject jsonObject) {
+    if (jsonObject == null) {
+      return null;
+    }
+    Set<String> keys = jsonObject.keySet();
+    return keys.toArray(new String[0]);
+  }
 }
