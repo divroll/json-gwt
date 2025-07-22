@@ -32,6 +32,11 @@ public class JSONArrayComplexTypesTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
+    /**
+     * Tests that nested arrays and objects maintain their structure and data.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_nested_arrays_and_objects_maintain_their_structure_and_data() throws JSONException {
         JSONArray innerArray = new JSONArray();
         innerArray.put(1).put(2);

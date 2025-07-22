@@ -33,12 +33,18 @@ public class JSONObjectBasicFunctionalityTest extends GWTTestCase {
         jsonObject = new JSONObject();
     }
 
+    /**
+     * Tests that a new empty JSONObject is created successfully.
+     */
     public void test_new_empty_object_is_created_successfully() {
         JSONObject obj = new JSONObject();
         assertNotNull(obj);
         assertTrue(obj.keySet().isEmpty());
     }
 
+    /**
+     * Tests that a JSONObject can be created from a valid JSON string.
+     */
     public void test_object_can_be_created_from_valid_json_string() {
         String jsonString = "{\"name\":\"John\",\"age\":30,\"active\":true}";
         try {
@@ -48,6 +54,9 @@ public class JSONObjectBasicFunctionalityTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that a JSONObject can be initialized from a GWT JSON object.
+     */
     public void test_object_can_be_initialized_from_gwt_json_object() {
         com.google.gwt.json.client.JSONObject gwtObject = new com.google.gwt.json.client.JSONObject();
         gwtObject.put("test", new JSONString("value"));

@@ -30,6 +30,11 @@ public class JSONObjectEdgeCasesTest extends GWTTestCase {
         jsonObject = new JSONObject();
     }
 
+    /**
+     * Tests that empty keys are allowed in JSONObject.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_empty_keys_are_allowed() throws JSONException {
         try {
             jsonObject.put("", "value");
@@ -40,23 +45,43 @@ public class JSONObjectEdgeCasesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that duplicate keys retain the last value in JSONObject.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_duplicate_keys_retain_last_value() throws JSONException {
         jsonObject.put("key", "value1");
         jsonObject.put("key", "value2");
         assertEquals("value2", jsonObject.getString("key")); // Last value should be retained
     }
 
+    /**
+     * Tests that special characters in keys are handled correctly in JSONObject.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_special_characters_in_keys_are_handled() throws JSONException {
         jsonObject.put("special\\key\"with\tnewlines\n", "value");
         assertEquals("value", jsonObject.getString("special\\key\"with\tnewlines\n"));
     }
 
+    /**
+     * Tests that special characters in values are handled correctly in JSONObject.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_special_characters_in_values_are_handled() throws JSONException {
         jsonObject.put("key", "special\\characters\"and\tnewlines\n");
         String retrieved = jsonObject.getString("key");
         assertEquals("special\\characters\"and\tnewlines\n", retrieved);
     }
 
+    /**
+     * Tests that very large numbers are handled correctly in JSONObject.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_very_large_numbers_are_handled() throws JSONException {
         double largeDouble = Double.MAX_VALUE;
         jsonObject.put("largeDouble", largeDouble);
@@ -67,6 +92,11 @@ public class JSONObjectEdgeCasesTest extends GWTTestCase {
         assertEquals(largeLong, jsonObject.getLong("largeLong"));
     }
 
+    /**
+     * Tests the performance of handling a large JSONObject.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_large_object_handling_performance() throws JSONException {
         int largeSize = 10000;
         for (int i = 0; i < largeSize; i++) {

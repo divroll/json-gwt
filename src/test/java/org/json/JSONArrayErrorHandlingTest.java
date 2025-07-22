@@ -34,22 +34,37 @@ public class JSONArrayErrorHandlingTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
-    public void test_unsupported_objects_throw_illegal_argument_exception() throws JSONException {
+    /**
+     * Tests that unsupported objects throw an JSONException.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
+    public void test_unsupported_objects_throw_json_exception() throws JSONException {
         try {
             jsonArray.put((Object) new java.util.Date());
-            fail("Expected IllegalArgumentException");
+            fail("Expected JSONException");
         } catch (JSONException e) {
             // expected
         }
     }
 
-    public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
+    /**
+     * Tests that enum retrieval works correctly for string values.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
+    public void test_enum_retrieval_works_correctly_for_string_values() throws JSONException {
         jsonArray.put("VALUE1");
         TestEnum valueEnum = jsonArray.getEnum(TestEnum.class, 0);
         assertNotNull(valueEnum);
         assertEquals("VALUE1", valueEnum.toString());
     }
 
+    /**
+     * Tests that adding unsupported object types results in an exception.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_adding_unsupported_object_types_results_in_exception() throws JSONException {
         try {
             jsonArray.put((Object) new java.util.Date());
@@ -60,6 +75,11 @@ public class JSONArrayErrorHandlingTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that empty state and null detection work correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_empty_state_and_null_detection_work_correctly() throws JSONException {
         assertTrue(jsonArray.length() == 0);
         jsonArray.put(JSONNull.getInstance());

@@ -35,6 +35,11 @@ public class JSONArrayDataTypesTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
+    /**
+     * Tests that boolean values are stored and retrieved correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_boolean_values_are_stored_and_retrieved_correctly() throws JSONException {
         jsonArray.put(true);
         jsonArray.put(false);
@@ -44,6 +49,11 @@ public class JSONArrayDataTypesTest extends GWTTestCase {
         assertFalse(((Boolean) jsonArray.get(1)).booleanValue());
     }
 
+    /**
+     * Tests that boolean wrapper objects, including null, are handled properly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_boolean_wrapper_objects_including_null_are_handled_properly() throws JSONException {
         jsonArray.put(Boolean.TRUE);
         jsonArray.put(Boolean.FALSE);
@@ -59,11 +69,21 @@ public class JSONArrayDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that float values maintain precision when retrieved.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_float_values_maintain_precision_when_retrieved() throws JSONException {
         jsonArray.put(2.5f);
         assertEquals(2.5f, jsonArray.getFloat(0), 0.001f);
     }
 
+    /**
+     * Tests that primitive values are stored and retrieved with correct types.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_primitive_values_are_stored_and_retrieved_with_correct_types() throws JSONException {
         jsonArray.put(true).put(false);
         jsonArray.put(1.234d).put(2.5f);
@@ -78,6 +98,11 @@ public class JSONArrayDataTypesTest extends GWTTestCase {
         assertEquals(123456789L, jsonArray.getLong(5));
     }
 
+    /**
+     * Tests that null wrapper objects return null when retrieved.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_null_wrapper_objects_return_null_when_retrieved() throws JSONException {
         jsonArray.put((Boolean) null)
                 .put((Double) null)
@@ -131,6 +156,11 @@ public class JSONArrayDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that numeric values can be retrieved as BigDecimal and BigInteger.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_numeric_values_can_be_retrieved_as_big_decimal_and_big_integer() throws JSONException {
         jsonArray.put(10.75).put(123456789);
         BigDecimal bd = jsonArray.getBigDecimal(0);
@@ -140,6 +170,11 @@ public class JSONArrayDataTypesTest extends GWTTestCase {
         assertEquals(BigInteger.valueOf(123456789L), bi);
     }
 
+    /**
+     * Tests that string, number, and null values are retrieved with appropriate types.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_string_number_and_null_values_are_retrieved_with_appropriate_types() throws JSONException {
         jsonArray.put("hello");
         jsonArray.put(3.14);

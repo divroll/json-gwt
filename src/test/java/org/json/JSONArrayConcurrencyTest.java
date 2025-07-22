@@ -30,6 +30,9 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
+    /**
+     * Tests that array access operations are performed sequentially.
+     */
     public void test_array_access_should_be_sequential() {
         final JSONArray array = new JSONArray();
         final int numOperations = 1000;
@@ -47,6 +50,9 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         assertEquals(numOperations, array.length());
     }
 
+    /**
+     * Tests that array modification operations are performed sequentially.
+     */
     public void test_array_modification_should_be_sequential() {
         final JSONArray array = new JSONArray();
 
@@ -75,6 +81,9 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that the array maintains its integrity after various operations.
+     */
     public void test_array_should_maintain_integrity() {
         final JSONArray array = new JSONArray();
 
@@ -95,6 +104,9 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that the array handles bounds correctly.
+     */
     public void test_array_should_handle_bounds_correctly() {
         final JSONArray array = new JSONArray();
         array.put("test");

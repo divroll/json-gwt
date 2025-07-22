@@ -32,6 +32,9 @@ public class JSONArrayBasicFunctionalityTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
+    /**
+     * Verifies that a new empty JSONArray is created successfully.
+     */
     public void test_new_empty_array_is_created_successfully() {
         JSONArray array = new JSONArray();
         assertNotNull(array);
@@ -39,6 +42,9 @@ public class JSONArrayBasicFunctionalityTest extends GWTTestCase {
         assertEquals(0, array.length());
     }
 
+    /**
+     * Verifies that a JSONArray can be initialized from a GWT JSONArray.
+     */
     public void test_array_can_be_initialized_from_gwt_json_array() {
         com.google.gwt.json.client.JSONArray gwtArray = new com.google.gwt.json.client.JSONArray();
         gwtArray.set(0, new com.google.gwt.json.client.JSONString("test"));

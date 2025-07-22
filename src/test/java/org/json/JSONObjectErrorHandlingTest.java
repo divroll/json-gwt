@@ -33,6 +33,11 @@ public class JSONObjectErrorHandlingTest extends GWTTestCase {
         jsonObject = new JSONObject();
     }
 
+    /**
+     * Tests that retrieving an enum from a string value throws an IllegalArgumentException.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_enum_retrieval_throws_exception_for_string_values() throws JSONException {
         jsonObject.put("e", "VALUE1");
         try {
@@ -43,6 +48,11 @@ public class JSONObjectErrorHandlingTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that JSON null values are detected correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_json_null_values_are_detected_correctly() throws JSONException {
         jsonObject.put("n", JSONNull.getInstance());
         assertTrue(jsonObject.get("n") == null);

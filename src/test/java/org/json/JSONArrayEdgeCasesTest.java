@@ -30,6 +30,11 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
+    /**
+     * Tests that accessing negative indices throws a JSONException.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_accessing_negative_indices_should_throw_exception() throws JSONException {
         try {
             jsonArray.get(-1);
@@ -46,6 +51,11 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that accessing out-of-bound indices throws a JSONException.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_accessing_out_of_bound_indices_should_throw_exception() throws JSONException {
         try {
             jsonArray.get(0); // Empty array
@@ -63,6 +73,11 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that handling a large array is efficient.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_large_array_handling_should_be_efficient() throws JSONException {
         int largeSize = 10000;
         for (int i = 0; i < largeSize; i++) {
@@ -81,12 +96,22 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         System.out.println("Large array access time: " + (endTime - startTime) + " ms");
     }
 
+    /**
+     * Tests that special characters in strings are handled correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_special_characters_in_strings_should_be_handled_correctly() throws JSONException {
         jsonArray.put("special\\characters\"and\tnewlines\n");
         String retrieved = jsonArray.getString(0);
         assertEquals("special\\characters\"and\tnewlines\n", retrieved);
     }
 
+    /**
+     * Tests that very large numbers are handled correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_very_large_numbers_should_be_handled_correctly() throws JSONException {
         double largeDouble = Double.MAX_VALUE;
         jsonArray.put(largeDouble);

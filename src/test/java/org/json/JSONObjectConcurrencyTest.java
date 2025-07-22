@@ -31,7 +31,7 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
     }
 
     /**
-     * Verifies that sequential insertion of entries results in the correct key count.
+     * Tests that sequential insertion of entries results in the correct key count.
      */
     public void test_sequential_insertion_of_entries_has_expected_key_count() {
         final JSONObject obj = new JSONObject();
@@ -51,7 +51,7 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
     }
 
     /**
-     * Verifies that simulated concurrent modifications update entries as expected.
+     * Tests that simulated concurrent modifications update entries as expected.
      */
     public void test_simulated_concurrent_modifications_result_in_updated_entries() {
         final JSONObject obj = new JSONObject();
@@ -82,7 +82,7 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
     }
 
     /**
-     * Verifies storing and retrieving various data types preserves integrity.
+     * Tests storing and retrieving various data types preserves integrity.
      */
     public void test_storing_and_retrieving_various_data_types_preserves_integrity() {
         final JSONObject obj = new JSONObject();
@@ -108,7 +108,7 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
     }
 
     /**
-     * Verifies key management adds and confirms expected keys correctly.
+     * Tests key management adds and confirms expected keys correctly.
      */
     public void test_key_management_adds_and_confirms_expected_keys() {
         final JSONObject obj = new JSONObject();
@@ -127,7 +127,7 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
     }
 
     /**
-     * Verifies nested objects and arrays can be accessed correctly.
+     * Tests nested objects and arrays can be accessed correctly.
      */
     public void test_nested_objects_and_arrays_are_accessed_correctly() {
         final JSONObject parentObj = new JSONObject();
@@ -158,7 +158,7 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
     }
 
     /**
-     * Verifies error handling for non-existent keys and type mismatches.
+     * Tests error handling for non-existent keys and type mismatches.
      */
     public void test_error_handling_for_nonexistent_keys_and_type_mismatches() {
         final JSONObject obj = new JSONObject();

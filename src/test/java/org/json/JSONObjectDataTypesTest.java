@@ -15,8 +15,6 @@
  */
 package org.json;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.*;
 import com.google.gwt.junit.client.GWTTestCase;
 
 import java.math.BigDecimal;
@@ -36,6 +34,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         jsonObject = new JSONObject();
     }
 
+    /**
+     * Tests that boolean values are stored and retrieved correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_boolean_values_are_stored_and_retrieved_correctly() throws JSONException {
         jsonObject.put("flag1", true);
         jsonObject.put("flag2", false);
@@ -44,6 +47,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         assertFalse(jsonObject.getBoolean("flag2"));
     }
 
+    /**
+     * Tests that boolean wrapper objects, including null, are handled properly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_boolean_wrapper_objects_including_null_are_handled_properly() throws JSONException {
         jsonObject.put("flag1", Boolean.TRUE);
         jsonObject.put("flag2", Boolean.FALSE);
@@ -59,6 +67,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that double values maintain precision when stored and retrieved.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_double_values_maintain_precision_when_stored_and_retrieved() throws JSONException {
         jsonObject.put("pi", 3.14159);
         jsonObject.put("max", Double.MAX_VALUE);
@@ -69,6 +82,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         assertEquals(Double.MIN_VALUE, jsonObject.getDouble("min"), 0.0);
     }
 
+    /**
+     * Tests that double wrapper objects, including null, are handled correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_double_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Double.valueOf(2.71828));
         jsonObject.put("null", (Double) null);
@@ -82,6 +100,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that float values maintain precision when stored and retrieved.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_float_values_maintain_precision_when_stored_and_retrieved() throws JSONException {
         jsonObject.put("float1", 1.5f);
         jsonObject.put("float2", Float.MAX_VALUE);
@@ -90,6 +113,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         assertEquals(Float.MAX_VALUE, jsonObject.getFloat("float2"), 0.0);
     }
 
+    /**
+     * Tests that float wrapper objects, including null, are handled correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_float_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Float.valueOf(2.5f));
         jsonObject.put("null", (Float) null);
@@ -103,6 +131,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that integer values are stored and retrieved with the correct range.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_integer_values_are_stored_and_retrieved_with_correct_range() throws JSONException {
         jsonObject.put("answer", 42);
         jsonObject.put("max", Integer.MAX_VALUE);
@@ -113,6 +146,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         assertEquals(Integer.MIN_VALUE, jsonObject.getInt("min"));
     }
 
+    /**
+     * Tests that integer wrapper objects, including null, are handled correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_integer_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Integer.valueOf(100));
         jsonObject.put("null", (Integer) null);
@@ -126,6 +164,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that long values are stored and retrieved with full precision.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_long_values_are_stored_and_retrieved_with_full_precision() throws JSONException {
         jsonObject.put("big", 123456789L);
         jsonObject.put("max", Long.MAX_VALUE);
@@ -134,6 +177,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         assertEquals(Long.MAX_VALUE, jsonObject.getLong("max"));
     }
 
+    /**
+     * Tests that long wrapper objects, including null, are handled correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_long_wrapper_objects_including_null_are_handled_correctly() throws JSONException {
         jsonObject.put("value", Long.valueOf(987654321L));
         jsonObject.put("null", (Long) null);
@@ -147,6 +195,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that string values, including empty and null, are stored correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_string_values_including_empty_and_null_are_stored_correctly() throws JSONException {
         jsonObject.put("name", "John Doe");
         jsonObject.put("empty", "");
@@ -162,6 +215,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that JSON arrays, including null, maintain structure and content.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_json_arrays_including_null_maintain_structure_and_content() throws JSONException {
         JSONArray array = new JSONArray();
         array.put("item1");
@@ -184,6 +242,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that all primitive types work together in a single object.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_all_primitive_types_work_together_in_single_object() throws JSONException {
         jsonObject.put("bool", true)
                 .put("dbl", 2.5d)
@@ -200,6 +263,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         assertEquals("test", jsonObject.getString("str"));
     }
 
+    /**
+     * Tests that all wrapper null values return null when retrieved.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_all_wrapper_null_values_return_null_when_retrieved() throws JSONException {
         jsonObject.put("b", (Boolean) null)
                 .put("d", (Double) null)
@@ -260,6 +328,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         }
     }
 
+    /**
+     * Tests that numeric values can be retrieved as BigDecimal and BigInteger.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_numeric_values_can_be_retrieved_as_big_decimal_and_big_integer() throws JSONException {
         jsonObject.put("bd", 3.14d)
                 .put("bi", 12345L);
@@ -268,6 +341,11 @@ public class JSONObjectDataTypesTest extends GWTTestCase {
         assertEquals(BigInteger.valueOf(12345L), jsonObject.getBigInteger("bi"));
     }
 
+    /**
+     * Tests that number retrieval and key enumeration work correctly.
+     *
+     * @throws JSONException if there is an error in the JSON operations
+     */
     public void test_number_retrieval_and_key_enumeration_work_correctly() throws JSONException {
         jsonObject.put("num", 5.0d)
                 .put("nullNum", (Number) null);

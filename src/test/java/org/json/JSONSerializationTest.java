@@ -34,7 +34,9 @@ public class JSONSerializationTest extends GWTTestCase {
     }
 
     /**
-     * Verifies that serializing and deserializing an array preserves all elements.
+     * Tests that serializing and deserializing an array preserves all elements.
+     *
+     * @throws JSONException if there is an error in the JSON operations
      */
     public void test_serializing_and_deserializing_array_preserves_elements() throws JSONException {
         jsonArray.put(true);
@@ -62,7 +64,9 @@ public class JSONSerializationTest extends GWTTestCase {
     }
 
     /**
-     * Verifies that serializing and deserializing an object preserves its entries.
+     * Tests that serializing and deserializing an object preserves its entries.
+     *
+     * @throws JSONException if there is an error in the JSON operations
      */
     public void test_serializing_and_deserializing_object_preserves_entries() throws JSONException {
         jsonObject.put("boolean", true);
@@ -89,7 +93,9 @@ public class JSONSerializationTest extends GWTTestCase {
     }
 
     /**
-     * Verifies that serializing and deserializing special characters preserves content integrity.
+     * Tests that serializing and deserializing special characters preserves content integrity.
+     *
+     * @throws JSONException if there is an error in the JSON operations
      */
     public void test_serializing_and_deserializing_special_characters_preserves_content_integrity() throws JSONException {
         jsonObject.put("key with spaces", "value with spaces");
