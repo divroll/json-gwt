@@ -30,8 +30,8 @@ import java.math.BigInteger;
  * convenient getter and setter methods for various data types.
  *
  * @author <a href="mailto:kerby@divroll.com">Kerby Martino</a>
- * @version 0-SNAPSHOT
- * @since 0-SNAPSHOT
+ * @version 0.0.1
+ * @since 0.0.1
  */
 public class JSONArray implements Serializable {
 
