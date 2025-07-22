@@ -16,6 +16,7 @@
 package org.json;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import org.json.JSONException;
 
 public class JSONSerializationTest extends GWTTestCase {
     private JSONArray jsonArray;
@@ -32,7 +33,10 @@ public class JSONSerializationTest extends GWTTestCase {
         jsonObject = new JSONObject();
     }
 
-    public void testJSONArraySerialization() throws JSONException {
+    /**
+     * Verifies that serializing and deserializing an array preserves all elements.
+     */
+    public void test_serializing_and_deserializing_array_preserves_elements() throws JSONException {
         jsonArray.put(true);
         jsonArray.put(123);
         jsonArray.put("test");
@@ -57,7 +61,10 @@ public class JSONSerializationTest extends GWTTestCase {
         assertEquals("value", nestedObject.getString("key"));
     }
 
-    public void testJSONObjectSerialization() throws JSONException {
+    /**
+     * Verifies that serializing and deserializing an object preserves its entries.
+     */
+    public void test_serializing_and_deserializing_object_preserves_entries() throws JSONException {
         jsonObject.put("boolean", true);
         jsonObject.put("number", 123);
         jsonObject.put("string", "test");
@@ -81,7 +88,10 @@ public class JSONSerializationTest extends GWTTestCase {
         assertEquals("value", nestedObject.getString("key"));
     }
 
-    public void testSpecialCharactersSerialization() throws JSONException {
+    /**
+     * Verifies that serializing and deserializing special characters preserves content integrity.
+     */
+    public void test_serializing_and_deserializing_special_characters_preserves_content_integrity() throws JSONException {
         jsonObject.put("key with spaces", "value with spaces");
         jsonObject.put("key\"with\"quotes", "value\"with\"quotes");
         jsonObject.put("key\\with\\backslashes", "value\\with\\backslashes");

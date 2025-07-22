@@ -30,11 +30,13 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
         jsonObject = new JSONObject();
     }
 
-    public void testSequentialAccess() {
+    /**
+     * Verifies that sequential insertion of entries results in the correct key count.
+     */
+    public void test_sequential_insertion_of_entries_has_expected_key_count() {
         final JSONObject obj = new JSONObject();
         final int numOperations = 1000;
 
-        // Simulate what would have been concurrent access by doing sequential operations
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 100; j++) {
                 try {
@@ -48,15 +50,16 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
         assertEquals("Object should have correct number of keys", numOperations, countKeys(obj));
     }
 
-    public void testSequentialModification() {
+    /**
+     * Verifies that simulated concurrent modifications update entries as expected.
+     */
+    public void test_simulated_concurrent_modifications_result_in_updated_entries() {
         final JSONObject obj = new JSONObject();
 
-        // Initialize object with initial values
         for (int i = 0; i < 100; i++) {
             obj.put("initial-" + i, "value-" + i);
         }
 
-        // Simulate what would have been concurrent modifications
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 try {
@@ -68,10 +71,8 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
             }
         }
 
-        // Check that the object has been modified correctly
         assertTrue("Object should have at least 10 keys", countKeys(obj) >= 10);
 
-        // Verify some of the modified values
         try {
             String value = obj.getString("key-0");
             assertTrue("Modified key should contain expected value", value.contains("thread-"));
@@ -80,10 +81,12 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
         }
     }
 
-    public void testObjectIntegrity() {
+    /**
+     * Verifies storing and retrieving various data types preserves integrity.
+     */
+    public void test_storing_and_retrieving_various_data_types_preserves_integrity() {
         final JSONObject obj = new JSONObject();
 
-        // Test adding various types of data
         obj.put("stringKey", "stringValue");
         obj.put("intKey", 42);
         obj.put("booleanKey", true);
@@ -104,33 +107,33 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
         }
     }
 
-    public void testObjectKeyManagement() {
+    /**
+     * Verifies key management adds and confirms expected keys correctly.
+     */
+    public void test_key_management_adds_and_confirms_expected_keys() {
         final JSONObject obj = new JSONObject();
 
-        // Add some keys
         obj.put("key1", "value1");
         obj.put("key2", "value2");
         obj.put("key3", "value3");
 
         assertEquals("Object should have 3 keys", 3, countKeys(obj));
-
-        // Test key existence
         assertTrue("Should have key1", obj.has("key1"));
         assertTrue("Should have key2", obj.has("key2"));
         assertTrue("Should have key3", obj.has("key3"));
         assertFalse("Should not have nonexistent key", obj.has("nonexistent"));
-
-        // Test that all expected keys are present
         assertTrue("Object should contain all expected keys",
                 containsExpectedKeys(obj, "key1", "key2", "key3"));
     }
 
-    public void testObjectNesting() {
+    /**
+     * Verifies nested objects and arrays can be accessed correctly.
+     */
+    public void test_nested_objects_and_arrays_are_accessed_correctly() {
         final JSONObject parentObj = new JSONObject();
         final JSONObject childObj = new JSONObject();
         final JSONArray childArray = new JSONArray();
 
-        // Build nested structure
         childObj.put("childKey", "childValue");
         childArray.put("arrayItem1");
         childArray.put("arrayItem2");
@@ -142,11 +145,9 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
         assertEquals("Parent should have 3 keys", 3, countKeys(parentObj));
 
         try {
-            // Test nested object access
             JSONObject retrievedChild = parentObj.getJSONObject("child");
             assertEquals("Child object should have correct value", "childValue", retrievedChild.getString("childKey"));
 
-            // Test nested array access
             JSONArray retrievedArray = parentObj.getJSONArray("array");
             assertEquals("Array should have 2 items", 2, retrievedArray.length());
             assertEquals("First array item should match", "arrayItem1", retrievedArray.getString(0));
@@ -156,40 +157,34 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
         }
     }
 
-    public void testObjectErrorHandling() {
+    /**
+     * Verifies error handling for non-existent keys and type mismatches.
+     */
+    public void test_error_handling_for_nonexistent_keys_and_type_mismatches() {
         final JSONObject obj = new JSONObject();
         obj.put("stringKey", "stringValue");
         obj.put("intKey", 42);
 
         try {
-            // Test accessing non-existent key
             boolean exceptionThrown = false;
             try {
                 obj.getString("nonExistentKey");
             } catch (Exception e) {
                 exceptionThrown = true;
-                // Exception for non-existent key is acceptable behavior
             }
-            // Either throwing an exception or returning null/default is valid
 
-            // Test type mismatch
             exceptionThrown = false;
             try {
-                obj.getInt("stringKey"); // Try to get string as int
+                obj.getInt("stringKey");
             } catch (Exception e) {
                 exceptionThrown = true;
-                // Exception for type mismatch is expected behavior
             }
-            // Some implementations might handle type conversion, others throw exceptions
 
         } catch (Exception e) {
             fail("Unexpected exception during error handling test: " + e.getMessage());
         }
     }
 
-    /**
-     * Helper method to count keys in a JSONObject
-     */
     private int countKeys(JSONObject obj) {
         int count = 0;
         String[] names = JSONObject.getNames(obj);
@@ -199,9 +194,6 @@ public class JSONObjectConcurrencyTest extends GWTTestCase {
         return count;
     }
 
-    /**
-     * Helper method to check if an object contains expected keys
-     */
     private boolean containsExpectedKeys(JSONObject obj, String... expectedKeys) {
         String[] names = JSONObject.getNames(obj);
         if (names == null) return expectedKeys.length == 0;

@@ -30,7 +30,7 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
-    public void testNegativeIndices() throws JSONException {
+    public void test_accessing_negative_indices_should_throw_exception() throws JSONException {
         try {
             jsonArray.get(-1);
             fail("Expected JSONException for negative index");
@@ -46,7 +46,7 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         }
     }
 
-    public void testOutOfBoundIndices() throws JSONException {
+    public void test_accessing_out_of_bound_indices_should_throw_exception() throws JSONException {
         try {
             jsonArray.get(0); // Empty array
             fail("Expected JSONException for out-of-bound index");
@@ -63,7 +63,7 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         }
     }
 
-    public void testLargeArrayHandling() throws JSONException {
+    public void test_large_array_handling_should_be_efficient() throws JSONException {
         int largeSize = 10000;
         for (int i = 0; i < largeSize; i++) {
             jsonArray.put(i);
@@ -81,13 +81,13 @@ public class JSONArrayEdgeCasesTest extends GWTTestCase {
         System.out.println("Large array access time: " + (endTime - startTime) + " ms");
     }
 
-    public void testSpecialCharactersInStrings() throws JSONException {
+    public void test_special_characters_in_strings_should_be_handled_correctly() throws JSONException {
         jsonArray.put("special\\characters\"and\tnewlines\n");
         String retrieved = jsonArray.getString(0);
         assertEquals("special\\characters\"and\tnewlines\n", retrieved);
     }
 
-    public void testVeryLargeNumbers() throws JSONException {
+    public void test_very_large_numbers_should_be_handled_correctly() throws JSONException {
         double largeDouble = Double.MAX_VALUE;
         jsonArray.put(largeDouble);
         assertEquals(largeDouble, jsonArray.getDouble(0), 0.0);

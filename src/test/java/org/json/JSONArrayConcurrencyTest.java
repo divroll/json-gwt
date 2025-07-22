@@ -30,7 +30,7 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         jsonArray = new JSONArray();
     }
 
-    public void testSequentialAccess() {
+    public void test_array_access_should_be_sequential() {
         final JSONArray array = new JSONArray();
         final int numOperations = 1000;
 
@@ -47,7 +47,7 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         assertEquals(numOperations, array.length());
     }
 
-    public void testSequentialModification() {
+    public void test_array_modification_should_be_sequential() {
         final JSONArray array = new JSONArray();
 
         for (int i = 0; i < 100; i++) {
@@ -75,7 +75,7 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         }
     }
 
-    public void testArrayIntegrity() {
+    public void test_array_should_maintain_integrity() {
         final JSONArray array = new JSONArray();
 
         array.put("string");
@@ -95,7 +95,7 @@ public class JSONArrayConcurrencyTest extends GWTTestCase {
         }
     }
 
-    public void testArrayBounds() {
+    public void test_array_should_handle_bounds_correctly() {
         final JSONArray array = new JSONArray();
         array.put("test");
 
