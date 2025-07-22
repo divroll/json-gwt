@@ -150,7 +150,7 @@ try {
 Add the following to your `.gwt.xml` module file:
 
 ```xml
-<inherits name='com.divroll.json.JSON'/>
+<inherits name='org.JSON'/>
 ```
 
 ## Requirements
