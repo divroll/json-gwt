@@ -33,6 +33,7 @@
         <filtering>true</filtering>
         <includes>
           <include>**/*.gwt.xml</include>
+          <include>**/*.java</include>
         </includes>
       </resource>
       <resource>
@@ -78,6 +79,7 @@
         <executions>
           <execution>
             <id>attach-sources</id>
+            <phase>package</phase>
             <goals>
               <goal>jar</goal>
             </goals>
